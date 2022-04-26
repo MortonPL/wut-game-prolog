@@ -84,10 +84,10 @@ Different predicates should be separated by **two** newlines.
 If-then-else constructions should be formatted in the following way:
 ```
 (condition ->
-    do_if_true
+    do_if_true,
     do_if_true_more
     ;
-    do_if_false
+    do_if_false,
     do_if_false_more
 ).
 ```
