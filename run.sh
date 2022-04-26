@@ -1,0 +1,1 @@
+swipl --quiet adventure.pl
