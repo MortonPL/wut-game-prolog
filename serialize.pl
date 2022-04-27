@@ -35,7 +35,10 @@ save(File) :-
         atomic_list_concat(['saves/', File, '.sav'], '', Path),
         tell(Path),
         serializables(S),
-        foreach(member(X, S), listing(X)),
+        foreach(member(X, S),
+        (
+            listing(X)
+        )),
         told.
 
 /**COMMAND
@@ -59,11 +62,26 @@ save :-
  */
 load(Name) :-
         atomic_list_concat(['saves/', Name, '.sav'], '', Path),
-        open(Path, read, Fd),
         reset_game,
+        open(Path, read, Fd),
         serializables(S),
-        forall((read_term(Fd, X, []),\+X=end_of_file,memberchk(X, S)), asserta(X)),
-        close(Fd),
+        repeat,
+                read_term(Fd, X, []),
+                (X == end_of_file ->
+                        !
+                        ; 
+                        (foreach((member(FCmpd,S),
+                                term_to_atom(FCmpd, FAtom),
+                                sub_atom(FAtom, 0, _, 2, FName),sub_atom(FAtom, _, 1, 0, FArity),
+                                number_codes(FArityInt, [FArity]),
+                                functor(X, FName, FArityInt)),
+                        (
+                                assert(X)
+                        )),
+                        fail
+                        )
+                ),
+        close(Fd), !,
         game_start.
 
 /**COMMAND
@@ -88,5 +106,8 @@ load :-
  */
 reset_game :-
         serializables(S),
-        foreach(member(X, S), abolish(X)),
+        foreach(member(X, S), 
+        (
+                abolish(X)
+        )),
         consult(serialize).

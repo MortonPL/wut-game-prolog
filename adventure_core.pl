@@ -100,7 +100,7 @@ finish :-
 /* This rule prints out instructions and tells where you are. */
 game_start :-
         (retract(sys_first_session) ; true),
-        look.
+        !, look.
 
 
 /* These rules describe the various rooms.  Depending on

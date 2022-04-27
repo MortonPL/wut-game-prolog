@@ -19,16 +19,16 @@ command(drop).      command(look).
  * True for yes, false for no.
  */
 confirm(Question) :-
-    atomics_to_string([Question, '(yes/no)'], Q),
-    writeln(Q),
-    repeat,
-        read(A),nl,
-        (member(A, [yes, no]) ->
-            !
-            ;
-            fail
-        ),
-    A == yes.
+        atomics_to_string([Question, '(yes/no)'], Q),
+        writeln(Q),
+        repeat,
+                read(A),
+                (member(A, [yes, no]) ->
+                !
+                ;
+                fail
+                ),
+        A == yes.
 
 
 /**SYSTEM
@@ -38,9 +38,9 @@ confirm(Question) :-
  * Always true.
  */
 get_input(Prompt, Var, Predicate) :-
-    writeln(Prompt),
-    read(Var),
-    assert(Predicate).
+        writeln(Prompt),
+        read(Var),
+        assert(Predicate).
 
 /**SYSTEM
  * get_input(+Prompt:any, --Var:var, :Term:cmpd, +Cancel:atom)
@@ -50,7 +50,7 @@ get_input(Prompt, Var, Predicate) :-
  * True if user doesn't cancel, false otherwise.
  */
 get_input(Prompt, Var, Predicate, Cancel) :-
-    writeln(Prompt),
-    read(Var),
-    \+ (Var == Cancel),
-    assert(Predicate).
+        writeln(Prompt),
+        read(Var),
+        \+ (Var == Cancel),
+        assert(Predicate).
