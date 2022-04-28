@@ -130,6 +130,11 @@ look :-
         notice_any_objects_at(Place),
         nl.
 
+inventory :-
+        nl,
+        notice_any_objects_at(player),
+        nl.
+
 
 /* These rules set up a loop to mention all the objects
    in your vicinity. */
