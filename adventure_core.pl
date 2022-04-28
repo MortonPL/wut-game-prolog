@@ -36,18 +36,15 @@ adv_add_inventory(Owner, Object, Amount) :-
         ).
 
 adv_move_inventory(OwnerA, OwnerB, Object, Amount, Ret) :-
-        err(Amount > 0, Ret, err_tooSmallAmount),
-        err(adv_in_inventory(OwnerA, Object, AmountA), Ret, err_missingObject),
-        err(AmountA >= Amount, Ret, err_tooBigAmount),
-        ok(Ret),
-        adv_add_inventory(OwnerA, Object, -Amount),
-        adv_add_inventory(OwnerB, Object, Amount).
-
-err(Cond, Ret, RetVal) :-
-        (\+ Cond) -> Ret = RetVal.
-
-ok(Ret) :-
-        Ret = ok_success.
+        Amount > 0 -> (
+                adv_in_inventory(OwnerA, Object, AmountA) -> (
+                        AmountA >= Amount -> (
+                                Ret = ok_success,
+                                adv_add_inventory(OwnerA, Object, -Amount),
+                                adv_add_inventory(OwnerB, Object, Amount)
+                        ) ; Ret = err_tooBigAmount
+                ) ; Ret = err_missingObject
+        ); Ret = err_tooSmallAmount.
 
 
 
@@ -57,8 +54,9 @@ ok(Ret) :-
  */
 take(Object, Amount) :-
         adv_i_am_at(Place),
-        (adv_move_inventory(Place, player, Object, Amount, Ret); true),
-        handle_take_ret(Ret, Object, Amount).
+        adv_move_inventory(Place, player, Object, Amount, Ret),
+        handle_take_ret(Ret, Object, Amount),
+        !.
 
 take(Object) :-
         adv_i_am_at(Place),
@@ -70,10 +68,10 @@ take(_) :-
         handle_take_ret(err_missingObject, _, 0).
 
 handle_take_ret(Ret, Object, Amount) :-
-        ok_success = Ret                -> format('You took ~w of ''~w''.~n', [Amount, Object]);
-        err_missingObject = Ret         -> format('There is no ''~w'' here.~n', [Object]);
+        err_tooSmallAmount = Ret        -> write('Don''t be silly.~n');
+        err_missingObject = Ret         -> format('There is none.~n');
         err_tooBigAmount = Ret          -> format('There is not enough ``~w'' here.~n', [Object]);
-        err_tooSmallAmount = Ret        -> write('Don''t be silly.~n').
+        ok_success = Ret                -> format('You took ~w of ''~w''.~n', [Amount, Object]).
 
 
 /* These rules describe how to put down an object. */
