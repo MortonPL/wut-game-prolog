@@ -40,7 +40,7 @@ for x in range(size):
                 add(f'merchandise({id}, {p}, {m})')
             add(f'name({id}, \'{merchant[0]}\')')
         else:
-            border = x == 0 | x == dsize | y == 0 | y == dsize
+            border = (x == 0) | (x == dsize) | (y == 0) | (y == dsize)
             if border:
                 # Shallow sea
                 add(f'tile_type({id}, t_shallow)')
