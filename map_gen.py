@@ -59,4 +59,4 @@ for (dx, dy, dir) in ((1, 0, 'e'), (-1, 0, 'w'), (0, 1, 's'), (0, -1, 'n')):
 commands.sort()
 with open('map.pl', 'w') as file:
     for command in commands:
-        file.write(f'assert(map_{command}).\n')
+        file.write(f':-assert(map_{command}).\n')

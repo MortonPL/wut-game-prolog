@@ -3,15 +3,13 @@
 ╔════════════════════════════════════╗
 ║ Filename: adventure.pl             ║
 ║ Title: Boot file                   ║
-║ Reload: Forbidden                  ║
 ╚════════════════════════════════════╝
 */
 
-% Consult all needed files.
-:- [command, helpme, serialize, adventure_core, map].
+:- dynamic has_included/1.
 
-% Forward declare predicates.
-:- dynamic sys_first_session/0.
+% Consult all needed files.
+:- [header, command, helpme, serialize, adventure_core, map].
 
 % Assert system data.
 sys_first_session :- true.

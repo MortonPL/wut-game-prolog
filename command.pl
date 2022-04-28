@@ -6,11 +6,18 @@
 ╚════════════════════════════════════╝
 */
 
-% All player commands should be asserted here.
-command(helpme).    command(start). command(quit).  command(n).
-command(s).         command(e).     command(w).     command(take).
-command(drop).      command(look).
+:- [header].
 
+:- 
+        has_included(command);
+        % All player commands should be asserted here.
+        assert(command(helpme)),    assert(command(start)), assert(command(quit)),      assert(command(north)),
+        assert(command(n)),         assert(command(south)), assert(command(s)),         assert(command(west)),
+        assert(command(w)),         assert(command(east)),  assert(command(e)),         assert(command(take)),
+        assert(command(drop)),      assert(command(look)),  assert(command(inventory)), assert(command(i)).
+
+% pragma once
+:- has_included(command);assert(has_included(command)).
 
 /**SYSTEM
  * confirm(+Prompt:atom|string|int|float)
@@ -54,43 +61,3 @@ get_input(Prompt, Var, Predicate, Cancel) :-
         read(Var),
         \+ (Var == Cancel),
         assert(Predicate).
-
-/**SYSTEM
- * get_description(+Command:atom) 
- * 
- * Writes an extended description for the Command. Always true.
- */
-get_description(start) :-
-        writeln('start. - Start a new game. All progress will be lost!').
-
-get_description(quit) :-
-        writeln('quit. - Quit the game and exit Prolog shell. All progress will be lost!').
-
-get_description(n) :-
-        writeln('n. - Move North of the current location if possible.').
-
-get_description(s) :-
-        writeln('s. - Move South of the current location if possible.').
-
-get_description(w) :-
-        writeln('w. - Move West of the current location if possible.').
-
-get_description(e) :-
-        writeln('e. - Move East of the current location if possible.').
-
-get_description(take) :-
-        writeln('take(Object). - Pick up an Object in the current location and place it in your inventory.').
-
-get_description(drop) :-
-        writeln('drop(Object). - Remove an Object from your inventory and leave it in the current location.').
-
-get_description(look) :-
-        writeln('look. - Examine the current location again.').
-
-/**SYSTEM
- * get_description(+Object:atom) 
- * 
- * Writes an extended description for the Object.
- */
-
-% todo

@@ -2,10 +2,13 @@
 ╔══════════════════════════════╗
 ║ Filename: adventure_core.pl  ║
 ║ Title: Main game file.       ║
-║ Reload: Forbidden            ║
 ╚══════════════════════════════╝
 */
 
+:- [header].
+
+% pragma once
+:- has_included(adventure_core);assert(has_included(adventure_core)).
 
 /**SYSTEM
  * adv_add_inventory(+Object:atom, ++Amount:int)
@@ -98,20 +101,35 @@ handle_drop_ret(Ret, Object, Amount) :-
 
 
 /* These rules define the direction letters as calls to go/1. */
-n() :- 
+north() :-
         go(n).
-s() :- 
+
+n() :- 
+        north.
+
+south() :-
         go(s).
-e() :- 
+
+s() :- 
+        south.
+
+east() :-
         go(e).
-w() :- 
+
+e() :- 
+        east.
+
+west() :-
         go(w).
+
+w() :- 
+        west.
 
 
 /* This rule tells how to move in a given direction. */
 go(Direction) :-
         adv_i_am_at(Here),
-        adv_path(Here, Direction, There),
+        map_path(Here, Direction, There),
         retract(adv_i_am_at(Here)),
         assert(adv_i_am_at(There)),
         !, look.
@@ -132,6 +150,8 @@ inventory :-
         nl,
         notice_any_objects_at(player),
         nl.
+
+i :- inventory.
 
 
 /* These rules set up a loop to mention all the objects
@@ -178,25 +198,26 @@ game_start :-
 describe() :-
         adv_i_am_at(Place),
         desc_here(Place),
-        format('You see:~n'),
-        write(' - '), desc_horizon(Place, n, 'north'), format(',~n'),
-        write(' - '), desc_horizon(Place, s, 'south'), format(',~n'),
-        write(' - '), desc_horizon(Place, w, 'west'), format(',~n'),
-        write(' - '), desc_horizon(Place, e, 'east'), format('.~n').
+        nl,
+        desc_horizon(Place, n, 'north'), format(',~n'),
+        desc_horizon(Place, s, 'south'), format(',~n'),
+        desc_horizon(Place, w, 'west'), format(',~n'),
+        desc_horizon(Place, e, 'east'), format('.~n').
 
 desc_here(Place) :-
-        tile_type(Place, t_merchant) -> (
-                name(Place, Name),
+        map_tile_type(Place, t_merchant) -> (
+                map_name(Place, Name),
                 format('You are on the ~w.~nThere ought to be a merchant here!~n', [Name])
         );
-        tile_type(Place, t_shallow) -> format('You are on a calm sea.~n');
-        tile_type(Place, t_deep) -> format('The sea is unsteady.~nYour ship could be blown away at any moment..~n').
+        map_tile_type(Place, t_shallow) -> format('You are on a calm sea.~n');
+        map_tile_type(Place, t_deep) -> format('The sea is unsteady.~nYour ship could be blown away at any moment..~n').
 
 desc_horizon(Place, Direction, DirName) :-
-        adv_path(Place, Direction, OtherPlace) -> (
-                tile_type(OtherPlace, t_merchant) -> format('a landmass up ~w', [DirName]);
-                tile_type(OtherPlace, t_shallow) -> format('calm waters up ~w', [DirName]);
-                tile_type(OtherPlace, t_deep) -> format('storm clouds forming up ~w', [DirName])
+        map_path(Place, Direction, OtherPlace) -> (
+                map_tile_type(OtherPlace, t_merchant) -> format('Land ho! A coast up ~w', [DirName]);
+                map_tile_type(OtherPlace, t_shallow) -> format('Nothing but calm waters up ~w', [DirName]);
+                map_tile_type(OtherPlace, t_deep) -> format('Vile storms are brewing up ~w', [DirName])
         );(
-                format('nothing interesting up ~w', [DirName])
+                format('You smell no money up ~w', [DirName])
         ).
+

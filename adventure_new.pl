@@ -2,7 +2,6 @@
 ╔════════════════════════════════╗
 ║ Filename: adventure_new.pl     ║
 ║ Title: Fresh game start state. ║
-║ Reload: Unsafe                 ║
 ╚════════════════════════════════╝
 */
 
