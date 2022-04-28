@@ -18,7 +18,7 @@ helpme :-
         writeln('Available commands are:'),
         writeln('helpme.                -- to see this message again.'),
         writeln('helpme(Topic).         -- to get detailed help on a command or topic.'),
-        writeln('start.                 -- to start the game.'),
+        writeln('start.                 -- to start a new game.'),
         writeln('quit.                  -- to end the game and exit Prolog shell.'),
         writeln('n.  s.  e.  w.         -- to go in that direction.'),
         writeln('take(Object).          -- to pick up an Object.'),
@@ -33,7 +33,7 @@ helpme :-
  */
 helpme(Command) :-
         (command(Command) ->
-                writeln(Command)
+                get_description(Command)
                 ;
                 write('Invalid command: '),
                 write(Command), nl

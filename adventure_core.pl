@@ -6,19 +6,46 @@
 ╚══════════════════════════════╝
 */
 
-/*WARNING - UNFORMATED, UNEDITED FILE */
 
-/* These rules describe how to pick up an object. */
-take(X) :-
-        adv_holding(X),
-        write('You''re already holding it!'),
-        !, nl.
+/**SYSTEM
+ * adv_add_inventory(+Object:atom, ++Amount:int)
+ * 
+ */
+adv_add_inventory(Owner, Object, Amount) :-
+        Amount > 0,
+        assert(adv_in_inventory(Owner, Object)),
+        (adv_in_inventory(Owner, Object, OldAmount) ->
+                true
+                ;
+                OldAmount is 0
+        ),
+        (retract(adv_in_inventory(Owner, Object, OldAmount)) ; true),
+        NewAmount is OldAmount + Amount,
+        assert(adv_in_inventory(Owner, Object, NewAmount)).
 
-take(X) :-
+adv_add_inventory(Owner, Object, Amount) :-
+        Amount < 0,
+        adv_in_inventory(Owner, Object, OldAmount),
+        (OldAmount > abs(Amount) ->
+                retract(adv_in_inventory(Owner, Object, OldAmount)),
+                NewAmount is OldAmount + Amount,
+                assert(adv_in_inventory(Owner, Object, NewAmount))
+                ;
+                retract(adv_in_inventory(Owner, Object)),
+                retract(adv_in_inventory(Owner, Object, OldAmount))
+        ).
+
+
+/**COMMAND
+ * take(Object)
+ * 
+ */
+take(Object) :-
         adv_i_am_at(Place),
-        adv_at(X, Place),
-        retract(adv_at(X, Place)),
-        assert(adv_holding(X)),
+        adv_in_inventory(Place, Object),
+        retract(adv_at(Object, Place)),
+        adv_add_inventory(Place, Object, -1),
+        adv_add_inventory(player, Object, 1),
         write('OK.'),
         !, nl.
 
@@ -28,17 +55,22 @@ take(_) :-
 
 
 /* These rules describe how to put down an object. */
-drop(X) :-
-        adv_holding(X),
+drop(Object) :-
+        adv_in_inventory(player, Object),
         adv_i_am_at(Place),
-        retract(adv_holding(X)),
-        assert(adv_at(X, Place)),
+        adv_add_inventory(player, Object, -1),
+        adv_add_inventory(Place, Object, 1),
         write('OK.'),
         !, nl.
 
 drop(_) :-
-        write('You aren''t holding it!'),
+        write('You don''t have any '),
+        write(_),
+        write('!'),
         nl.
+
+
+/*WARNING - UNFORMATED, UNEDITED FILE */
 
 
 /* These rules define the direction letters as calls to go/1. */
@@ -69,18 +101,27 @@ look :-
         adv_i_am_at(Place),
         describe(Place),
         nl,
-        notice_objects_at(Place),
+        notice_any_objects_at(Place),
         nl.
 
 
 /* These rules set up a loop to mention all the objects
    in your vicinity. */
-notice_objects_at(Place) :-
-        adv_at(X, Place),
-        write('There is a '), write(X), write(' here.'), nl,
+notice_all_objects_at(Place) :-
+        adv_in_inventory(Place, Object, Amount),
+        write(Object),write('('),write(Amount),write(').'),nl,
         fail.
 
-notice_objects_at(_).
+notice_all_objects_at(_).
+
+
+notice_any_objects_at(Place) :-
+        (adv_in_inventory(Place, _, _) ->
+                writeln('You can find following items:'),
+                notice_all_objects_at(Place)
+                ;
+                writeln('There is nothing of value here.')
+        ).  
 
 
 /* This rule tells how to die. */

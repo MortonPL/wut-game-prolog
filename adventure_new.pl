@@ -12,4 +12,5 @@ adv_i_am_at(someplace).
 
 adv_path(someplace, n, someplace).
 
-adv_at(thing, someplace).
+adv_in_inventory(someplace, thing, 5).
+adv_in_inventory(someplace, thing2, 3).
