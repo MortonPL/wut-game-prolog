@@ -7,11 +7,11 @@
 */
 
 % Forward declare predicates.
-:- dynamic adv_i_am_at/1,     adv_path/3,          adv_in_inventory/2, adv_in_inventory/3,
+:- dynamic adv_i_am_at/1,     adv_in_inventory/2, adv_in_inventory/3,
            adv_player_name/1, sys_last_savename/1.
 
 % All serializable game data should be asserted here.
-serializable(adv_i_am_at/1).      serializable(adv_path/3).        serializable(adv_in_inventory/2).
+serializable(adv_i_am_at/1).      serializable(adv_in_inventory/2).
 serializable(adv_in_inventory/3). serializable(adv_player_name/1). serializable(sys_last_savename/1).
 
 

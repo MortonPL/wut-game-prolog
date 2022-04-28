@@ -123,7 +123,7 @@ go(_) :-
 /* This rule tells how to look about you. */
 look :-
         adv_i_am_at(Place),
-        describe(Place),
+        describe(),
         nl,
         notice_any_objects_at(Place),
         nl.
@@ -175,5 +175,28 @@ game_start :-
 
 /* These rules describe the various rooms.  Depending on
    circumstances, a room may have more than one description. */
-describe(someplace) :- write('You are someplace.'), nl.
+describe() :-
+        adv_i_am_at(Place),
+        desc_here(Place),
+        format('You see:~n'),
+        write(' - '), desc_horizon(Place, n, 'north'), format(',~n'),
+        write(' - '), desc_horizon(Place, s, 'south'), format(',~n'),
+        write(' - '), desc_horizon(Place, w, 'west'), format(',~n'),
+        write(' - '), desc_horizon(Place, e, 'east'), format('.~n').
 
+desc_here(Place) :-
+        tile_type(Place, t_merchant) -> (
+                name(Place, Name),
+                format('You are on the ~w.~nThere ought to be a merchant here!~n', [Name])
+        );
+        tile_type(Place, t_shallow) -> format('You are on a calm sea.~n');
+        tile_type(Place, t_deep) -> format('The sea is unsteady.~nYour ship could be blown away at any moment..~n').
+
+desc_horizon(Place, Direction, DirName) :-
+        adv_path(Place, Direction, OtherPlace) -> (
+                tile_type(OtherPlace, t_merchant) -> format('a landmass up ~w', [DirName]);
+                tile_type(OtherPlace, t_shallow) -> format('calm waters up ~w', [DirName]);
+                tile_type(OtherPlace, t_deep) -> format('storm clouds forming up ~w', [DirName])
+        );(
+                format('nothing interesting up ~w', [DirName])
+        ).

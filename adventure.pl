@@ -8,7 +8,7 @@
 */
 
 % Consult all needed files.
-:- [command, helpme, serialize, adventure_core].
+:- [command, helpme, serialize, adventure_core, map].
 
 % Forward declare predicates.
 :- dynamic sys_first_session/0.
