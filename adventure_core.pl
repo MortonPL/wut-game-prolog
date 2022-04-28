@@ -128,14 +128,47 @@ w() :-
 
 /* This rule tells how to move in a given direction. */
 go(Direction) :-
-        adv_i_am_at(Here),
-        map_path(Here, Direction, There),
-        retract(adv_i_am_at(Here)),
-        assert(adv_i_am_at(There)),
-        !, look.
+        move(Direction),
+        !,
+        check_storm(Direction),
+        look.
 
 go(_) :-
         write('You can''t go that way.').
+
+move(Direction) :-
+        adv_i_am_at(Here),
+        map_path(Here, Direction, There),
+        retract(adv_i_am_at(Here)),
+        assert(adv_i_am_at(There)).
+
+check_storm(Direction) :-
+        adv_i_am_at(Position),
+        map_tile_type(Position, t_deep),
+        random_between(1, 30, Rand),
+        Rand =< 10 ->
+        do_the_storm(Direction);
+        true.
+
+do_the_storm(Direction) :-
+        dir_encode(Direction, Value),
+        random_between(-1, 1, Rand),
+        NewValue is (Value + Rand) mod 4,
+        dir_decode(NewDirection, NewValue),
+        format('A storm went by, your ship is off the course!~n~n'),
+        move(NewDirection).
+
+dir_encode(Direction, Value) :-
+        Direction = n -> Value is 0;
+        Direction = e -> Value is 1;
+        Direction = s -> Value is 2;
+        Direction = w -> Value is 3.
+
+dir_decode(Direction, Value) :-
+        Value is 0 -> Direction = n;
+        Value is 1 -> Direction = e;
+        Value is 2 -> Direction = s;
+        Value is 3 -> Direction = w.
 
 
 /* This rule tells how to look about you. */
