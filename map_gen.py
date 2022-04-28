@@ -54,9 +54,9 @@ for (dx, dy, dir) in ((1, 0, 'e'), (-1, 0, 'w'), (0, 1, 's'), (0, -1, 'n')):
         for y in range(clmp(0 - dy), clmp(dsize - dy) + 1):
             id1 = f'tile_{x}_{y}'
             id2 =f'tile_{x + dx}_{y + dy}'
-            add(f'adv_path({id1}, {dir}, {id2})')
+            add(f'path({id1}, {dir}, {id2})')
 
 commands.sort()
 with open('map.pl', 'w') as file:
     for command in commands:
-        file.write(f'assert({command}).\n')
+        file.write(f'assert(map_{command}).\n')
