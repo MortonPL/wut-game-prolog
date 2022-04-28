@@ -49,9 +49,9 @@ for x in range(size):
                 # Deep sea
                 add(f'tile_type({id}, t_deep)')
 
-for (dx, dy, dir) in ((-1, 0, 'w'), (1, 0, 'e'), (0, -1, 'n'), (0, 1, 's')):
-    for x in range(clmp(0 - dx), clmp(size - dx) + 1):
-        for y in range(clmp(0 - dy), clmp(size - dy) + 1):
+for (dx, dy, dir) in ((1, 0, 'e'), (-1, 0, 'w'), (0, 1, 's'), (0, -1, 'n')):
+    for x in range(clmp(0 - dx), clmp(dsize - dx) + 1):
+        for y in range(clmp(0 - dy), clmp(dsize - dy) + 1):
             id1 = f'tile_{x}_{y}'
             id2 =f'tile_{x + dx}_{y + dy}'
             add(f'adv_path({id1}, {dir}, {id2})')
