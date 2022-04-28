@@ -9,10 +9,10 @@
 products = ('rum', 'gunpowder', 'blunderbuss', 'ration')
 
 merchants = {
-    (3, 0): ('Northstable Island', (1.0, 1.0, 1.0, 1.0)),
-    (2, 2): ('Storm Reef', (1.4, 0.6, 0.6, 1.8)),
-    (0, 3): ('White Tiger Island', (1.2, 1.6, 1.2, 0.8)),
-    (4, 5): ('Bishop Rock Island', (1.2, 1.4, 1.2, 1.0)),
+    (3, 0): ('Northstable Island', (1.0, 1.0, 1.0, 1.0), 'Morshu'),
+    (2, 2): ('Storm Reef', (1.4, 0.6, 0.6, 1.8), 'Tem'),
+    (0, 3): ('White Tiger Island', (1.2, 1.6, 1.2, 0.8), 'Daniel Jacks'),
+    (4, 5): ('Bishop Rock Island', (1.2, 1.4, 1.2, 1.0), 'Fred'),
 }
 
 size = 6
@@ -39,6 +39,7 @@ for x in range(size):
             for (p, m) in zip(products, merchant[1]):
                 add(f'merchandise({id}, {p}, {m})')
             add(f'name({id}, \'{merchant[0]}\')')
+            add(f'merchant_name({id}, \'{merchant[2]}\')')
         else:
             border = (x == 0) | (x == dsize) | (y == 0) | (y == dsize)
             if border:

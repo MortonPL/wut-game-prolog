@@ -146,6 +146,10 @@ merchandise(tile_4_5, blunderbuss, 1.2).
 merchandise(tile_4_5, gunpowder, 1.4).
 merchandise(tile_4_5, ration, 1.0).
 merchandise(tile_4_5, rum, 1.2).
+merchant_name(tile_0_3, 'Daniel Jacks').
+merchant_name(tile_2_2, 'Tem').
+merchant_name(tile_3_0, 'Morshu').
+merchant_name(tile_4_5, 'Fred').
 name(tile_0_3, 'White Tiger Island').
 name(tile_2_2, 'Storm Reef').
 name(tile_3_0, 'Northstable Island').
