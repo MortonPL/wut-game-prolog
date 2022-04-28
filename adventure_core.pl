@@ -16,7 +16,6 @@
  */
 adv_add_inventory(Owner, Object, Amount) :-
         Amount > 0,
-        assert(adv_in_inventory(Owner, Object)),
         (adv_in_inventory(Owner, Object, OldAmount) ->
                 true
                 ;
@@ -34,7 +33,6 @@ adv_add_inventory(Owner, Object, Amount) :-
                 NewAmount is OldAmount + Amount,
                 ((NewAmount > 0 -> assert(adv_in_inventory(Owner, Object, NewAmount))) ; true)
                 ;
-                retract(adv_in_inventory(Owner, Object)),
                 retract(adv_in_inventory(Owner, Object, OldAmount))
         ).
 
@@ -49,6 +47,9 @@ adv_move_inventory(OwnerA, OwnerB, Object, Amount, Ret) :-
                 ) ; Ret = err_missingObject
         ); Ret = err_tooSmallAmount.
 
+has_at_least(Owner, Object, Amount) :-
+        adv_in_inventory(Owner, Object, ActualAmount),
+        ActualAmount >= Amount.
 
 
 /**COMMAND
@@ -81,7 +82,8 @@ handle_take_ret(Ret, Object, Amount) :-
 drop(Object, Amount) :-
         adv_i_am_at(Place),
         (adv_move_inventory(player, Place, Object, Amount, Ret); true),
-        handle_drop_ret(Ret, Object, Amount).
+        handle_drop_ret(Ret, Object, Amount),
+        !.
 
 drop(Object) :-
         adv_in_inventory(player, Object, Amount),
@@ -96,6 +98,35 @@ handle_drop_ret(Ret, Object, Amount) :-
         err_missingObject = Ret         -> format('There is no ''~w'' on you.~n', [Object]);
         err_tooBigAmount = Ret          -> format('There is not enough ``~w'' on you.~n', [Object]);
         err_tooSmallAmount = Ret        -> write('Don''t be silly.~n').
+
+
+/* Trading goods. */
+sell(Merchant, Object, Amount) :-
+        Amount > 0,
+        merchant_name(Place, Merchant),
+        adv_i_am_at(Place),
+        price(Object, BasePrice),
+        EarnedCoins is Amount * BasePrice,
+        (has_at_least(player, Object, Amount) -> true;
+                format('There is not enough ``~w'' on you.~n', [Object]), fail),
+        adv_add_inventory(player, Object, -Amount),
+        adv_add_inventory(player, coin, EarnedCoins),
+        format('You sold ~w of ''~w'' for ~w coins.~n', [Amount, Object, EarnedCoins]),
+        !.
+
+buy(Merchant, Object, Amount) :-
+        Amount > 0,
+        merchant_name(Place, Merchant),
+        adv_i_am_at(Place),
+        price(Object, BasePrice),
+        SpentCoins is Amount * BasePrice,
+        (has_at_least(player, coin, SpentCoins) -> true;
+                write('Come back when you''re a little richer.'), nl, fail),
+        adv_add_inventory(player, coin, -SpentCoins),
+        adv_add_inventory(player, Object, Amount),
+        format('You bought ~w of ''~w'' for ~w coins.~n', [Amount, Object, SpentCoins]),
+        !.
+
 
 /*WARNING - UNFORMATED, UNEDITED FILE */
 

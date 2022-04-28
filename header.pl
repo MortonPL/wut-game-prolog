@@ -17,7 +17,8 @@
                    north/0, n/0,            south/0, s/0,         east/0, e/0,      west/0, w/0,
                    go/1,                    look/0,               inventory/0, i/0, notice_all_objects_at/1,
                    notice_any_objects_at/1, die/0,                finish/0,         game_start/0,
-                   describe/0,              desc_here/1,          desc_horizon/3.
+                   describe/0,              desc_here/1,          desc_horizon/3,   has_at_least/3,
+                   buy/3,                   sell/3.
 
 % adventure
         % data
