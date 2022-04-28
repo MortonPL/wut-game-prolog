@@ -26,34 +26,36 @@ def clmp(n):
     else:
         return n
 
-with open('map.pl', 'w') as file:
-    add = lambda s: file.write(f'assert({s}).\n')
-    file.write('% Tiles\n')
-    for x in range(size):
-        for y in range(size):
-            id = f'tile_{x}_{y}'
-            if (x, y) in merchants.keys():
-                # Merchants
-                merchant = merchants[(x, y)]
-                add(f'tile_type({id}, t_merchant)')
-                for (p, m) in zip(products, merchant[1]):
-                    add(f'merchandise({id}, {p}, {m})')
-                add(f'name("{merchant[0]}")')
+
+commands = []
+add = lambda s: commands.append(s)
+for x in range(size):
+    for y in range(size):
+        id = f'tile_{x}_{y}'
+        if (x, y) in merchants.keys():
+            # Merchants
+            merchant = merchants[(x, y)]
+            add(f'tile_type({id}, t_merchant)')
+            for (p, m) in zip(products, merchant[1]):
+                add(f'merchandise({id}, {p}, {m})')
+            add(f'name({id}, \'{merchant[0]}\')')
+        else:
+            border = x == 0 | x == dsize | y == 0 | y == dsize
+            if border:
+                # Shallow sea
+                add(f'tile_type({id}, t_shallow)')
             else:
-                border = x == 0 | x == dsize | y == 0 | y == dsize
-                if border:
-                    # Shallow sea
-                    add(f'tile_type({id}, t_shallow)')
-                else:
-                    # Deep sea
-                    add(f'tile_type({id}, t_deep)')
-    
-    file.write('% Paths\n')
-    for (dx, dy, dir) in ((-1, 0, 'w'), (1, 0, 'e'), (0, -1, 'n'), (0, 1, 's')):
-        for x in range(clmp(0 - dx), clmp(size - dx) + 1):
-            for y in range(clmp(0 - dy), clmp(size - dy) + 1):
-                id1 = f'tile_{x}_{y}'
-                id2 =f'tile_{x + dx}_{y + dy}'
-                add(f'adv_path({id1}, {dir}, {id2})')
+                # Deep sea
+                add(f'tile_type({id}, t_deep)')
 
+for (dx, dy, dir) in ((-1, 0, 'w'), (1, 0, 'e'), (0, -1, 'n'), (0, 1, 's')):
+    for x in range(clmp(0 - dx), clmp(size - dx) + 1):
+        for y in range(clmp(0 - dy), clmp(size - dy) + 1):
+            id1 = f'tile_{x}_{y}'
+            id2 =f'tile_{x + dx}_{y + dy}'
+            add(f'adv_path({id1}, {dir}, {id2})')
 
+commands.sort()
+with open('map.pl', 'w') as file:
+    for command in commands:
+        file.write(f'{command}.\n')
