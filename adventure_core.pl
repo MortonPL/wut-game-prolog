@@ -26,48 +26,75 @@ adv_add_inventory(Owner, Object, Amount) :-
 adv_add_inventory(Owner, Object, Amount) :-
         Amount < 0,
         adv_in_inventory(Owner, Object, OldAmount),
-        (OldAmount > abs(Amount) ->
+        (OldAmount >= abs(Amount) -> 
                 retract(adv_in_inventory(Owner, Object, OldAmount)),
                 NewAmount is OldAmount + Amount,
-                assert(adv_in_inventory(Owner, Object, NewAmount))
+                ((NewAmount > 0 -> assert(adv_in_inventory(Owner, Object, NewAmount))) ; true)
                 ;
                 retract(adv_in_inventory(Owner, Object)),
                 retract(adv_in_inventory(Owner, Object, OldAmount))
         ).
+
+adv_move_inventory(OwnerA, OwnerB, Object, Amount, Ret) :-
+        err(Amount > 0, Ret, err_tooSmallAmount),
+        err(adv_in_inventory(OwnerA, Object, AmountA), Ret, err_missingObject),
+        err(AmountA >= Amount, Ret, err_tooBigAmount),
+        ok(Ret),
+        adv_add_inventory(OwnerA, Object, -Amount),
+        adv_add_inventory(OwnerB, Object, Amount).
+
+err(Cond, Ret, RetVal) :-
+        Cond -> true; Ret is RetVal, fail.
+
+ok(Ret) :-
+        Ret is ok_success.
+
 
 
 /**COMMAND
  * take(Object)
  * 
  */
+take(Object, Amount) :-
+        adv_i_am_at(Place),
+        adv_move_inventory(Place, player, Object, Amount, Ret),
+        handle_take_ret(Ret, Object, Amount).
+
 take(Object) :-
         adv_i_am_at(Place),
-        adv_in_inventory(Place, Object),
-        retract(adv_at(Object, Place)),
-        adv_add_inventory(Place, Object, -1),
-        adv_add_inventory(player, Object, 1),
-        write('OK.'),
-        !, nl.
+        adv_in_inventory(Place, Object, Amount) ->
+                take(Object, Amount);
+                handle_take_ret(err_missingObject, Object),
+        true.
 
-take(_) :-
-        write('I don''t see it here.'),
-        nl.
+handle_take_ret(Ret, Object) :-
+        handle_take_ret(Ret, Object, 0).
+
+handle_take_ret(Ret, Object, Amount) :-
+        ok_success = Ret                -> format('You took ~w of ''~w''.~n', [Amount, Object]);
+        err_missingObject = Ret         -> format('There is no ''~w'' here.~n', [Object]);
+        err_tooBigAmount = Ret          -> format('There is not enough ``~w'' here.~n', [Object]);
+        err_tooSmallAmount = Ret        -> write('Don''t be silly.~n').
+
+/* very good yeas */
+cheat() :-
+        write("YOU WON! CONGRATULATIONS!"),
+        halt.
+
 
 
 /* These rules describe how to put down an object. */
-drop(Object) :-
-        adv_in_inventory(player, Object),
+drop(Object, Amount) :-
         adv_i_am_at(Place),
-        adv_add_inventory(player, Object, -1),
-        adv_add_inventory(Place, Object, 1),
-        write('OK.'),
-        !, nl.
+        adv_move_inventory(player, Place, Object, Amount),
+        format('You dropped ~w of ''~w''.~n', [Amount, Object]), !.
 
-drop(_) :-
-        write('You don''t have any '),
-        write(_),
-        write('!'),
-        nl.
+drop(Object) :-
+        adv_in_inventory(player, Object, Amount),
+        drop(Object, Amount), !.
+
+drop(Object) :-
+        format('You don''t have any ''~w''!', [Object]).
 
 
 /*WARNING - UNFORMATED, UNEDITED FILE */
@@ -109,7 +136,7 @@ look :-
    in your vicinity. */
 notice_all_objects_at(Place) :-
         adv_in_inventory(Place, Object, Amount),
-        write(Object),write('('),write(Amount),write(').'),nl,
+        format('~w of ''~w''~n', [Amount, Object]),       /* :kingsi: */
         fail.
 
 notice_all_objects_at(_).
