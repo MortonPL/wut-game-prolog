@@ -44,10 +44,10 @@ adv_move_inventory(OwnerA, OwnerB, Object, Amount, Ret) :-
         adv_add_inventory(OwnerB, Object, Amount).
 
 err(Cond, Ret, RetVal) :-
-        Cond -> true; Ret is RetVal, fail.
+        (\+ Cond) -> Ret = RetVal.
 
 ok(Ret) :-
-        Ret is ok_success.
+        Ret = ok_success.
 
 
 
@@ -57,18 +57,17 @@ ok(Ret) :-
  */
 take(Object, Amount) :-
         adv_i_am_at(Place),
-        adv_move_inventory(Place, player, Object, Amount, Ret),
+        (adv_move_inventory(Place, player, Object, Amount, Ret); true),
         handle_take_ret(Ret, Object, Amount).
 
 take(Object) :-
         adv_i_am_at(Place),
-        adv_in_inventory(Place, Object, Amount) ->
-                take(Object, Amount);
-                handle_take_ret(err_missingObject, Object),
-        true.
+        adv_in_inventory(Place, Object, Amount),
+        take(Object, Amount),
+        !.
 
-handle_take_ret(Ret, Object) :-
-        handle_take_ret(Ret, Object, 0).
+take(_) :-
+        handle_take_ret(err_missingObject, _, 0).
 
 handle_take_ret(Ret, Object, Amount) :-
         ok_success = Ret                -> format('You took ~w of ''~w''.~n', [Amount, Object]);
@@ -76,26 +75,26 @@ handle_take_ret(Ret, Object, Amount) :-
         err_tooBigAmount = Ret          -> format('There is not enough ``~w'' here.~n', [Object]);
         err_tooSmallAmount = Ret        -> write('Don''t be silly.~n').
 
-/* very good yeas */
-cheat() :-
-        write("YOU WON! CONGRATULATIONS!"),
-        halt.
-
-
 
 /* These rules describe how to put down an object. */
 drop(Object, Amount) :-
         adv_i_am_at(Place),
-        adv_move_inventory(player, Place, Object, Amount),
-        format('You dropped ~w of ''~w''.~n', [Amount, Object]), !.
+        (adv_move_inventory(player, Place, Object, Amount, Ret); true),
+        handle_drop_ret(Ret, Object, Amount).
 
 drop(Object) :-
         adv_in_inventory(player, Object, Amount),
-        drop(Object, Amount), !.
+        drop(Object, Amount),
+        !.
 
-drop(Object) :-
-        format('You don''t have any ''~w''!', [Object]).
+drop(_) :-
+        handle_drop_ret(err_missingObject, _, 0).
 
+handle_drop_ret(Ret, Object, Amount) :-
+        ok_success = Ret                -> format('You dropped ~w of ''~w''.~n', [Amount, Object]);
+        err_missingObject = Ret         -> format('There is no ''~w'' on you.~n', [Object]);
+        err_tooBigAmount = Ret          -> format('There is not enough ``~w'' on you.~n', [Object]);
+        err_tooSmallAmount = Ret        -> write('Don''t be silly.~n').
 
 /*WARNING - UNFORMATED, UNEDITED FILE */
 
