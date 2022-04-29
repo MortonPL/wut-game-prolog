@@ -6,13 +6,78 @@
 #   S D D D D S 4
 #   S S S S M S 5
 
-products = ('rum', 'gunpowder', 'blunderbuss', 'ration')
+class Merchant:
+    def __init__(self, island_name, merchant_name, sell, buy):
+        self.island_name = island_name
+        self.merchant_name = merchant_name
+        self.sell = sell
+        self.buy = buy
 
 merchants = {
-    (3, 0): ('Northstable Island', (1.0, 1.0, 1.0, 1.0), 'Morshu'),
-    (2, 2): ('Storm Reef', (1.4, 0.6, 0.6, 1.8), 'Tem'),
-    (0, 3): ('White Tiger Island', (1.2, 1.6, 1.2, 0.8), 'Daniel Jacks'),
-    (4, 5): ('Bishop Rock Island', (1.2, 1.4, 1.2, 1.0), 'Fred'),
+    (3, 0): Merchant(
+        'Northstable Island',
+        'Morshu',
+        {
+            'rum': 1.0,
+            'gunpowder': 1.0,
+            'blunderbuss': 1.0,
+            'ration': 1.0,
+            'banana': 1.0,
+        }, {
+            'rum': 0.9,
+            'gunpowder': 0.9,
+            'blunderbuss': 0.9,
+            'ration': 0.9,
+            'banana': 0.9,
+        }),
+    (2, 2): Merchant(
+        'Storm Reef',
+        'Tem',
+        {
+            'rum': 1.4,
+            'gunpowder': 0.6,
+            'blunderbuss': 0.6,
+            'ration': 1.8,
+            'map_piece_1': 1.0,
+        }, {
+            'rum': 1.3,
+            'gunpowder': 0.5,
+            'blunderbuss': 0.5,
+            'ration': 1.7,
+            'banana': 1.1,
+        }),
+    (0, 3): Merchant(
+        'White Tiger Island',
+        'Daniel Jacks',
+        {
+            'rum': 1.2,
+            'gunpowder': 1.6,
+            'blunderbuss': 1.2,
+            'ration': 0.8,
+            'mercenary': 1.0,
+        }, {
+            'rum': 1.1,
+            'gunpowder': 1.5,
+            'blunderbuss': 1.1,
+            'ration': 0.7,
+            'banana': 1.3,
+        }),
+    (4, 5): Merchant(
+        'Bishop Rock Island',
+        'Fred',
+        {
+            'rum': 1.2,
+            'gunpowder': 1.4,
+            'blunderbuss': 1.2,
+            'ration': 1.0,
+            'mercenary': 0.8,
+        }, {
+            'rum': 1.1,
+            'gunpowder': 1.3,
+            'blunderbuss': 1.1,
+            'ration': 0.9,
+            'banana': 1.6,
+        }),
 }
 
 size = 6
@@ -36,10 +101,12 @@ for x in range(size):
             # Merchants
             merchant = merchants[(x, y)]
             add(f'tile_type({id}, t_merchant)')
-            for (p, m) in zip(products, merchant[1]):
-                add(f'merchandise({id}, {p}, {m})')
-            add(f'name({id}, \'{merchant[0]}\')')
-            add(f'merchant_name({id}, \'{merchant[2]}\')')
+            for (p, m) in merchant.sell.items():
+                add(f'selling({id}, {p}, {m})')
+            for (p, m) in merchant.buy.items():
+                add(f'buying({id}, {p}, {m})')
+            add(f'island_name({id}, \'{merchant.island_name}\')')
+            add(f'merchant_name({id}, \'{merchant.merchant_name}\')')
         else:
             border = (x == 0) | (x == dsize) | (y == 0) | (y == dsize)
             if border:

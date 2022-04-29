@@ -1,27 +1,31 @@
-:-assert(map_merchandise(tile_0_3, blunderbuss, 1.2)).
-:-assert(map_merchandise(tile_0_3, gunpowder, 1.6)).
-:-assert(map_merchandise(tile_0_3, ration, 0.8)).
-:-assert(map_merchandise(tile_0_3, rum, 1.2)).
-:-assert(map_merchandise(tile_2_2, blunderbuss, 0.6)).
-:-assert(map_merchandise(tile_2_2, gunpowder, 0.6)).
-:-assert(map_merchandise(tile_2_2, ration, 1.8)).
-:-assert(map_merchandise(tile_2_2, rum, 1.4)).
-:-assert(map_merchandise(tile_3_0, blunderbuss, 1.0)).
-:-assert(map_merchandise(tile_3_0, gunpowder, 1.0)).
-:-assert(map_merchandise(tile_3_0, ration, 1.0)).
-:-assert(map_merchandise(tile_3_0, rum, 1.0)).
-:-assert(map_merchandise(tile_4_5, blunderbuss, 1.2)).
-:-assert(map_merchandise(tile_4_5, gunpowder, 1.4)).
-:-assert(map_merchandise(tile_4_5, ration, 1.0)).
-:-assert(map_merchandise(tile_4_5, rum, 1.2)).
+:-assert(map_buying(tile_0_3, banana, 1.3)).
+:-assert(map_buying(tile_0_3, blunderbuss, 1.1)).
+:-assert(map_buying(tile_0_3, gunpowder, 1.5)).
+:-assert(map_buying(tile_0_3, ration, 0.7)).
+:-assert(map_buying(tile_0_3, rum, 1.1)).
+:-assert(map_buying(tile_2_2, banana, 1.1)).
+:-assert(map_buying(tile_2_2, blunderbuss, 0.5)).
+:-assert(map_buying(tile_2_2, gunpowder, 0.5)).
+:-assert(map_buying(tile_2_2, ration, 1.7)).
+:-assert(map_buying(tile_2_2, rum, 1.3)).
+:-assert(map_buying(tile_3_0, banana, 0.9)).
+:-assert(map_buying(tile_3_0, blunderbuss, 0.9)).
+:-assert(map_buying(tile_3_0, gunpowder, 0.9)).
+:-assert(map_buying(tile_3_0, ration, 0.9)).
+:-assert(map_buying(tile_3_0, rum, 0.9)).
+:-assert(map_buying(tile_4_5, banana, 1.6)).
+:-assert(map_buying(tile_4_5, blunderbuss, 1.1)).
+:-assert(map_buying(tile_4_5, gunpowder, 1.3)).
+:-assert(map_buying(tile_4_5, ration, 0.9)).
+:-assert(map_buying(tile_4_5, rum, 1.1)).
+:-assert(map_island_name(tile_0_3, 'White Tiger Island')).
+:-assert(map_island_name(tile_2_2, 'Storm Reef')).
+:-assert(map_island_name(tile_3_0, 'Northstable Island')).
+:-assert(map_island_name(tile_4_5, 'Bishop Rock Island')).
 :-assert(map_merchant_name(tile_0_3, 'Daniel Jacks')).
 :-assert(map_merchant_name(tile_2_2, 'Tem')).
 :-assert(map_merchant_name(tile_3_0, 'Morshu')).
 :-assert(map_merchant_name(tile_4_5, 'Fred')).
-:-assert(map_name(tile_0_3, 'White Tiger Island')).
-:-assert(map_name(tile_2_2, 'Storm Reef')).
-:-assert(map_name(tile_3_0, 'Northstable Island')).
-:-assert(map_name(tile_4_5, 'Bishop Rock Island')).
 :-assert(map_path(tile_0_0, e, tile_1_0)).
 :-assert(map_path(tile_0_0, s, tile_0_1)).
 :-assert(map_path(tile_0_1, e, tile_1_1)).
@@ -142,6 +146,26 @@
 :-assert(map_path(tile_5_4, w, tile_4_4)).
 :-assert(map_path(tile_5_5, n, tile_5_4)).
 :-assert(map_path(tile_5_5, w, tile_4_5)).
+:-assert(map_selling(tile_0_3, blunderbuss, 1.2)).
+:-assert(map_selling(tile_0_3, gunpowder, 1.6)).
+:-assert(map_selling(tile_0_3, mercenary, 1.0)).
+:-assert(map_selling(tile_0_3, ration, 0.8)).
+:-assert(map_selling(tile_0_3, rum, 1.2)).
+:-assert(map_selling(tile_2_2, blunderbuss, 0.6)).
+:-assert(map_selling(tile_2_2, gunpowder, 0.6)).
+:-assert(map_selling(tile_2_2, map_piece_1, 1.0)).
+:-assert(map_selling(tile_2_2, ration, 1.8)).
+:-assert(map_selling(tile_2_2, rum, 1.4)).
+:-assert(map_selling(tile_3_0, banana, 1.0)).
+:-assert(map_selling(tile_3_0, blunderbuss, 1.0)).
+:-assert(map_selling(tile_3_0, gunpowder, 1.0)).
+:-assert(map_selling(tile_3_0, ration, 1.0)).
+:-assert(map_selling(tile_3_0, rum, 1.0)).
+:-assert(map_selling(tile_4_5, blunderbuss, 1.2)).
+:-assert(map_selling(tile_4_5, gunpowder, 1.4)).
+:-assert(map_selling(tile_4_5, mercenary, 0.8)).
+:-assert(map_selling(tile_4_5, ration, 1.0)).
+:-assert(map_selling(tile_4_5, rum, 1.2)).
 :-assert(map_tile_type(tile_0_0, t_shallow)).
 :-assert(map_tile_type(tile_0_1, t_shallow)).
 :-assert(map_tile_type(tile_0_2, t_shallow)).
