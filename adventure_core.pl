@@ -480,10 +480,12 @@ ask(Merchant, Topic) :-
  * Prints out trade offers from Place.
  */
 print_out_offer(Place) :-
-        writeln('Selling:'),
+        map_merchant_prompt(Place, Prompt),
+        writeln(Prompt),
+        writeln('[Selling]'),
         print_selling_offer(Place),
         nl,
-        writeln('Buying:'),
+        writeln('[Buying]'),
         print_buying_offer(Place),
         true.
 
