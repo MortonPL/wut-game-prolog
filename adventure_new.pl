@@ -27,7 +27,6 @@ adv_worth(ration, 10).
 adv_worth(banana, 10).
 adv_worth(map_piece_1, 5000).
 adv_worth(map_piece_2, 5000).
-adv_worth(map_piece_3, 5000).
 adv_worth(mercenary, -1000).
 adv_worth(coin, 1).
 

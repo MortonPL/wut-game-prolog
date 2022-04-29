@@ -541,3 +541,21 @@ print_buying_offer(Place) :-
         fail.
 
 print_buying_offer(_). 
+
+/**COMMAND
+ * inspect(Item)
+ * 
+ * Tells you something about an item that you own.
+ */
+inspect(Item) :-
+        (\+ adv_in_inventory(player, Item, _)) ->
+        format('You don''t own that sort of item.');
+        Item = rum -> format('Would be delicious with cola, if I knew what that was.');
+        Item = gunpowder -> format('If you ever get sick of water just blow it up!');
+        Item = blunderbuss -> format('But I like to call it the Blunderbussy.');
+        Item = ration -> format('Meat so dry you can rip pants with it.');
+        Item = banana -> format('Yellow delight.');
+        Item = map_piece_1 -> format('A map piece that appears to be torn in half.~nMaybe I can find the other piece if I ask merchants?');
+        Item = map_piece_2 -> format('A map piece that appears to be torn in half.~nMaybe the pirates know something about the other piece?');
+        Item = mercenary -> format('The power of Sun Tzu in the palm of your hand.~nReduces pirate attacks and deflects them.');
+        Item = coin -> format('Local currency.~nI think it''s named ''Kromer''?').
