@@ -7,9 +7,10 @@
 #   S S S S M S 5
 
 class Merchant:
-    def __init__(self, island_name, merchant_name, sell, buy):
+    def __init__(self, island_name, merchant_name, merchant_prompt, sell, buy):
         self.island_name = island_name
         self.merchant_name = merchant_name
+        self.merchant_prompt = merchant_prompt
         self.sell = sell
         self.buy = buy
 
@@ -17,6 +18,7 @@ merchants = {
     (3, 0): Merchant(
         'Northstable Island',
         'Morshu',
+        'Bomb, ropes, lamp oil. You want it? It\'\'s yours my friend.',
         {
             'rum': 1.0,
             'gunpowder': 1.0,
@@ -33,6 +35,7 @@ merchants = {
     (2, 2): Merchant(
         'Storm Reef',
         'Tem',
+        'Tem go to colleg ye-ya!',
         {
             'rum': 1.4,
             'gunpowder': 0.6,
@@ -49,6 +52,7 @@ merchants = {
     (0, 3): Merchant(
         'White Tiger Island',
         'Daniel Jacks',
+        'My business was ruined by that pirate folk...',
         {
             'rum': 1.2,
             'gunpowder': 1.6,
@@ -65,6 +69,7 @@ merchants = {
     (4, 5): Merchant(
         'Bishop Rock Island',
         'Fred',
+        'Good evening.',
         {
             'rum': 1.2,
             'gunpowder': 1.4,
@@ -107,6 +112,7 @@ for x in range(size):
                 add(f'buying({id}, {p}, {m})')
             add(f'island_name({id}, \'{merchant.island_name}\')')
             add(f'merchant_name({id}, \'{merchant.merchant_name}\')')
+            add(f'merchant_prompt({id}, \'{merchant.merchant_prompt}\')')
         else:
             border = (x == 0) | (x == dsize) | (y == 0) | (y == dsize)
             if border:
