@@ -239,12 +239,22 @@ go(Direction) :-
 go(_) :-
         write('You can''t go that way.').
 
+/**HELPER
+ * move(++Direction: [n, s, w, e])
+ * 
+ * Moves the player in specific direction if possible.
+ */
 move(Direction) :-
         adv_i_am_at(Here),
         map_path(Here, Direction, There),
         retract(adv_i_am_at(Here)),
         assert(adv_i_am_at(There)).
 
+/**SYSTEM
+ * check_storm(++Direction: [n, s, w, e])
+ * 
+ * Performs a storm if conditions are met.
+ */
 check_storm(Direction) :-
         adv_i_am_at(Position),
         map_tile_type(Position, t_deep),
@@ -253,6 +263,11 @@ check_storm(Direction) :-
         do_the_storm(Direction);
         true.
 
+/**HELPER
+ * do_the_storm(++Direction: [n, s, w, e])
+ * 
+ * Performs the storm by moving a player in random direction that is not canceling his last move.
+ */
 do_the_storm(Direction) :-
         dir_encode(Direction, Value),
         random_between(-1, 1, Rand),
@@ -261,12 +276,22 @@ do_the_storm(Direction) :-
         format('A storm went by, your ship is off the course!~n~n'),
         move(NewDirection).
 
+/**HELPER
+ * dir_encode(++Direction: [n, s, w, e], --Value:int)
+ * 
+ * Turns direction into integer.
+ */
 dir_encode(Direction, Value) :-
         Direction = n -> Value is 0;
         Direction = e -> Value is 1;
         Direction = s -> Value is 2;
         Direction = w -> Value is 3.
 
+/**HELPER
+ * dir_decode(--Direction: [n, s, w, e], ++Value:int)
+ * 
+ * Turns integer into direction.
+ */
 dir_decode(Direction, Value) :-
         Value is 0 -> Direction = n;
         Value is 1 -> Direction = e;
