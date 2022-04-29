@@ -415,8 +415,8 @@ ensure_map_piece_1() :-
 pirate_attack() :-
         format('The pirates attacked you!~n'),
         adv_add_inventory(player, mercenary, -1) ->
-                format('Your brave mercenaries defended you!~n(-1 mercenary)~n~n')%,
-                %ensure_map_piece_1
+                format('Your brave mercenaries defended you!~n(-1 mercenary)~n~n'),
+                ensure_map_piece_1
         ;
                 adv_items_reduce(0.5),
                 format('You had no one to defend.~nYou lost half of your items.~n~n').
