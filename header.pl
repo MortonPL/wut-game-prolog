@@ -9,7 +9,7 @@
         % data
         :- dynamic adv_i_am_at/1,       adv_in_inventory/2, adv_in_inventory/3, adv_player_name/1,
                    map_path/3,          map_merchandise/3,  map_name/2,         map_tile_type/2,
-                   map_merchant_name/2.
+                   map_merchant_name/2, price/2.
 
         % functors
         :- dynamic adv_add_inventory/3,     adv_move_inventory/5, take/1,           take/2,

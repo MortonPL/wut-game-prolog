@@ -100,32 +100,61 @@ handle_drop_ret(Ret, Object, Amount) :-
         err_tooSmallAmount = Ret        -> write('Don''t be silly.~n').
 
 
-/* Trading goods. */
+/**COMMAND
+ * sell(++Merchant:atom, ++Object:int, ++Amount:int)
+ *
+ * Sells Amount of Object from player's inventory to Merchant for coins.
+ * Fails if player has no specified Amount of Object or the Amount is non-positive.
+ *
+ * Merchants are programmed to have no inventory (their resources are unlimited).
+ */
 sell(Merchant, Object, Amount) :-
-        Amount > 0,
-        merchant_name(Place, Merchant),
+        (Amount > 0 -> true;
+                report_trading_error(err_negativeAmount, Object)),
+        map_merchant_name(Place, Merchant),
         adv_i_am_at(Place),
         price(Object, BasePrice),
-        EarnedCoins is Amount * BasePrice,
+        map_merchandise(Place, Object, PriceMultiplier),
+        EarnedCoins is Amount * round(BasePrice * PriceMultiplier),
         (has_at_least(player, Object, Amount) -> true;
-                format('There is not enough ``~w'' on you.~n', [Object]), fail),
+                report_trading_error(err_notEnoughGoods, Object)),
         adv_add_inventory(player, Object, -Amount),
         adv_add_inventory(player, coin, EarnedCoins),
-        format('You sold ~w of ''~w'' for ~w coins.~n', [Amount, Object, EarnedCoins]),
-        !.
+        format('You sold ~w of ''~w'' for ~w coins.~n', [Amount, Object, EarnedCoins]).
 
+/**COMMAND
+ * buy(++Merchant:atom, ++Object:int, ++Amount:int)
+ *
+ * Buys Amount of Object from Merchant for coins and places it in player's inventory.
+ * Fails if player has not enought money or the Amount is non-positive.
+ *
+ * Merchants are programmed to have no inventory (their resources are unlimited).
+ */
 buy(Merchant, Object, Amount) :-
-        Amount > 0,
-        merchant_name(Place, Merchant),
+        (Amount > 0 -> true;
+                report_trading_error(err_negativeAmount, Object)),
+        map_merchant_name(Place, Merchant),
         adv_i_am_at(Place),
         price(Object, BasePrice),
-        SpentCoins is Amount * BasePrice,
+        map_merchandise(Place, Object, PriceMultiplier),
+        SpentCoins is Amount * round(BasePrice * PriceMultiplier),
         (has_at_least(player, coin, SpentCoins) -> true;
-                write('Come back when you''re a little richer.'), nl, fail),
+                report_trading_error(err_noMoney, Object)),
         adv_add_inventory(player, coin, -SpentCoins),
         adv_add_inventory(player, Object, Amount),
-        format('You bought ~w of ''~w'' for ~w coins.~n', [Amount, Object, SpentCoins]),
-        !.
+        format('You bought ~w of ''~w'' for ~w coins.~n', [Amount, Object, SpentCoins]).
+
+/**HELPER
+ * report_trading_error(++Error:atom, ++Object:atom)
+ *
+ * Prints out defined error messages.
+ * Always fails.
+ */
+report_trading_error(Error, Object) :-
+        (Error = err_noMoney       -> writeln('Come back when you''re a little richer.');
+        Error = err_notEnoughGoods -> format('There is not enough ``~w'' on you.~n', [Object]);
+        Error = err_negativeAmount -> writeln('No cheating >.<')),
+        fail.
 
 
 /*WARNING - UNFORMATED, UNEDITED FILE */
