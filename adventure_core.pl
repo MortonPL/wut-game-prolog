@@ -352,7 +352,7 @@ look() :-
  */
 desc_here(Place) :-
         map_tile_type(Place, t_merchant) -> (
-                map_name(Place, Name),
+                map_island_name(Place, Name),
                 map_merchant_name(Place, Merchant),
                 format('You are on the ~w.~nRumours are you can trade with ~w here.~n', [Name, Merchant])
         );
@@ -373,4 +373,47 @@ desc_horizon(Place, Direction, DirName) :-
         );(
                 format('You smell no money up ~w', [DirName])
         ).
+
+adv_items_reduce(Percentage) :-
+        adv_in_inventory(player, Item, Count),
+        retract(adv_in_inventory(player, Item, Count)),
+        Reduced is floor(Count * Percentage),
+        assert(adv_in_inventory(player, Item, Reduced)),
+        fail.
+
+adv_items_reduce(_).
+
+pirate_attack() :-
+        format('The pirates attacked you!~n'),
+        adv_add_inventory(player, mercenary, -1) ->
+        format('Your brave mercenaries defended you! (-1 mercenary)~n');
+        adv_items_reduce(0.5),
+        format('You had no one to defend. You lost half of your items.~n').
+
+pirate_roll() :-
+        total_worth(TotalWorth),
+        pirates_min_th(MinTreshold),
+        TotalWorth > MinTreshold -> (
+                pirates_max_th(MaxTreshold),
+                pirates_max_pc(MaxRisk),
+                Risk is MaxRisk * (min(TotalWorth, MaxTreshold) - MinTreshold) / (MaxTreshold - MinTreshold),
+                random(Rand),
+                Risk > Rand ->
+                pirate_attack();
+                true
+        );
+        true.
+
+total_worth(TotalWorth) :-
+        findall([Item, Count], (adv_in_inventory(player, Item, Count)), Items),
+        worth_sum(Items, TotalWorth).
+
+worth_sum([], 0).
+worth_sum([Head|Tail], TotalWorth) :-
+        worth_sum(Tail, Rest),
+        nth0(0, Head, Item),
+        nth0(1, Head, Count),
+        adv_worth(Item, Worth),
+        adv_price(Item, Price),
+        TotalWorth is (Count * Price * Worth) + Rest.
 
