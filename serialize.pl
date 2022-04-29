@@ -41,7 +41,7 @@ save(File) :-
         (
             listing(S)
         )),
-        told.
+        !, told.
 
 /**COMMAND
  * save()
