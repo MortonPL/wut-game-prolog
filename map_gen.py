@@ -1,3 +1,5 @@
+from typing import Dict, Tuple
+
 #   0 1 2 3 4 5
 #   S S S M S S 0
 #   S D D D D S 1
@@ -7,18 +9,22 @@
 #   S S S S M S 5
 
 class Merchant:
-    def __init__(self, island_name, merchant_name, merchant_prompt, sell, buy):
+    def __init__(self, island_name, merchant_name, merchant_prompt, merchant_topics, sell, buy):
         self.island_name = island_name
         self.merchant_name = merchant_name
         self.merchant_prompt = merchant_prompt
+        self.merchant_topics = merchant_topics
         self.sell = sell
         self.buy = buy
 
-merchants = {
+merchants: Dict[Tuple[int, int], Merchant] = {
     (3, 0): Merchant(
         'Northstable Island',
         'Morshu',
         'Bomb, ropes, lamp oil. You want it? It\'\'s yours my friend.',
+        [
+            ('merchants', 'There are two other islands to the south-east.')
+        ],
         {
             'rum': 1.0,
             'gunpowder': 1.0,
@@ -36,6 +42,9 @@ merchants = {
         'Storm Reef',
         'Tem',
         'Tem go to colleg ye-ya!',
+        [
+            ('merchants', 'sail eestwardz')
+        ],
         {
             'rum': 1.4,
             'gunpowder': 0.6,
@@ -52,7 +61,10 @@ merchants = {
     (0, 3): Merchant(
         'White Tiger Island',
         'Daniel Jacks',
-        'My business was ruined by that pirate folk...',
+        'My business was ruined by those pirate folk...',
+        [
+            ('merchants', 'If you\'\'re brave enough, try east-northeast!')
+        ],
         {
             'rum': 1.2,
             'gunpowder': 1.6,
@@ -70,6 +82,9 @@ merchants = {
         'Bishop Rock Island',
         'Fred',
         'Good evening.',
+        [
+            ('merchants', 'Other ships often take a course towards north...')
+        ],
         {
             'rum': 1.2,
             'gunpowder': 1.4,
@@ -113,6 +128,8 @@ for x in range(size):
             add(f'island_name({id}, \'{merchant.island_name}\')')
             add(f'merchant_name({id}, \'{merchant.merchant_name}\')')
             add(f'merchant_prompt({id}, \'{merchant.merchant_prompt}\')')
+            for (topic, answer) in merchant.merchant_topics:
+                add(f'merchant_topic({id}, {topic}, \'{answer}\')')
         else:
             border = (x == 0) | (x == dsize) | (y == 0) | (y == dsize)
             if border:

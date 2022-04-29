@@ -26,10 +26,14 @@
 :-assert(map_merchant_name(tile_2_2, 'Tem')).
 :-assert(map_merchant_name(tile_3_0, 'Morshu')).
 :-assert(map_merchant_name(tile_4_5, 'Fred')).
-:-assert(map_merchant_prompt(tile_0_3, 'My business was ruined by that pirate folk...')).
+:-assert(map_merchant_prompt(tile_0_3, 'My business was ruined by those pirate folk...')).
 :-assert(map_merchant_prompt(tile_2_2, 'Tem go to colleg ye-ya!')).
 :-assert(map_merchant_prompt(tile_3_0, 'Bomb, ropes, lamp oil. You want it? It''s yours my friend.')).
 :-assert(map_merchant_prompt(tile_4_5, 'Good evening.')).
+:-assert(map_merchant_topic(tile_0_3, merchants, 'If you''re brave enough, try east-northeast!')).
+:-assert(map_merchant_topic(tile_2_2, merchants, 'sail eestwardz')).
+:-assert(map_merchant_topic(tile_3_0, merchants, 'There are two other islands to the south-east.')).
+:-assert(map_merchant_topic(tile_4_5, merchants, 'Other ships often take a course towards north...')).
 :-assert(map_path(tile_0_0, e, tile_1_0)).
 :-assert(map_path(tile_0_0, s, tile_0_1)).
 :-assert(map_path(tile_0_1, e, tile_1_1)).

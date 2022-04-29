@@ -492,12 +492,33 @@ worth_sum([Head|Tail], TotalWorth) :-
 /**COMMAND
  * ask(++Merchant:atom, ++Topic:atom)
  * 
+ * Lists available topics player can talk about with Merchant.
+ */
+ask(Merchant) :-
+        map_merchant_name(Place, Merchant),
+        (adv_i_am_at(Place) -> true; format('Unfortunately, ~w is far away.~n', [Merchant]), fail),
+        writeln('What do you want to ask about?'),
+        write('''offer'''),
+        print_out_topics(Place),
+        true.
+
+print_out_topics(Place) :-
+        map_merchant_topic(Place, Topic, _),
+        format(' ''~w''', [Topic]),
+        fail.
+
+print_out_topics(_). 
+
+/**COMMAND
+ * ask(++Merchant:atom, ++Topic:atom)
+ * 
  * Provides information on Topic from Merchant's perspective.
  */
 ask(Merchant, Topic) :-
         map_merchant_name(Place, Merchant),
         (adv_i_am_at(Place) -> true; format('Unfortunately, ~w is far away.~n', [Merchant]), fail),
         (Topic = offer -> print_out_offer(Place);
+                map_merchant_topic(Place, Topic, Answer) -> writeln(Answer);
                 writeln('Haven''t heard of it.')
         ).
 
