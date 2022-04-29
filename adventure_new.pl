@@ -7,7 +7,7 @@
 
 % Default starting game state / scenario.
 
-adv_i_am_at(tile_0_3).
+adv_i_am_at(tile_3_0).
 
 adv_in_inventory(player, coin, 50000).
 adv_in_inventory(player, mercenary, 4).

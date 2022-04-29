@@ -26,15 +26,15 @@
  * True for yes, false for no.
  */
 confirm(Question) :-
-        format('~w (yes/no)~n', [Question]),
+        format('~w (aye/nay)~n', [Question]),
         repeat,
                 read(A),
-                (member(A, [yes, no]) ->
+                (member(A, [aye, nay]) ->
                 !
                 ;
                 fail
                 ),
-        A == yes.
+        A == aye.
 
 
 /**SYSTEM

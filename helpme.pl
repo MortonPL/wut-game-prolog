@@ -21,7 +21,7 @@ helpme :-
         writeln('Available commands are:'),
         writeln('META-GAME OPTIONS:'),
         writeln('  helpme.                              -- to see this message again.'),
-        writeln('  helpme(Topic).                       -- to get detailed help on a command or topic.'),
+        writeln('  helpme(Command).                     -- to get detailed help on a Command.'),
         writeln('  start.                               -- to start a new game.'),
         writeln('  menu.                                -- to see the main menu options.'),
         writeln('  quit.                                -- to end the game and exit Prolog shell.'),
@@ -30,12 +30,15 @@ helpme :-
         writeln('  s. / south.'),
         writeln('  w. / west.'),
         writeln('  e. / east.'),
-        writeln('  take(Item) / take(Item, Amount).     -- to pick up all or Amount of Item.'),
-        writeln('  drop(Item) / drop(Item, Amount).     -- to put down all or Amount of Item.'),
         writeln('  i. / inventory.                      -- to check your items'),
         writeln('  look.                                -- to look around you.'),
+        writeln('  take(Item) / take(Item, Amount).     -- to pick up all or Amount of Item.'),
+        writeln('  drop(Item) / drop(Item, Amount).     -- to put down all or Amount of Item.'),
+        writeln('  inspect(Item).                       -- to take a better look at an Item.'),
         writeln('  buy(Trader, Item, Amount).           -- to buy an Amount of Item from a Trader.'),
-        writeln('  sell(Trader, Item, Amount).          -- to sell an Amount of Item from a Trader.').
+        writeln('  sell(Trader, Item, Amount).          -- to sell an Amount of Item from a Trader.'),
+        writeln('  ask(Trader).                         -- to ask Trader about his topics.'),
+        writeln('  ask(Trader, Topic).                  -- to ask Trader about a Topic.').
 
 /*COMMAND
  * helpme(+Command:atom)
@@ -107,3 +110,6 @@ get_description(buy) :-
 
 get_description(sell) :-
         get_description('sell(Trader, Item, Amount). - Sell an Amount of Item with a Trader for money.').
+
+get_description(ask) :-
+        get_description('ask(Trader) / ask(Trader, Item). - Gain any sort of useful information from a Trader.').

@@ -34,8 +34,6 @@ adv_add_inventory(Owner, Object, Amount) :-
                 retract(adv_in_inventory(Owner, Object, OldAmount)),
                 NewAmount is OldAmount + Amount,
                 ((NewAmount > 0 -> assert(adv_in_inventory(Owner, Object, NewAmount))) ; true)
-                ;
-                retract(adv_in_inventory(Owner, Object, OldAmount))
         ).
 
 
@@ -323,8 +321,8 @@ notice_any_objects_at(Place) :-
                 writeln('You can find following items:'),
                 notice_all_objects_at(Place)
                 ;
-                writeln('There is nothing of value here.')
-        ).
+                writeln('  - There is nothing of value here.')
+        ). 
 
 /**HELPER
  * notice_any_objects_at(+Place:atom)
@@ -334,7 +332,7 @@ notice_any_objects_at(Place) :-
  */
 notice_all_objects_at(Place) :-
         adv_in_inventory(Place, Object, Amount),
-        format('~w of ''~w''~n', [Amount, Object]),
+        format('  - ~w of ''~w''~n', [Amount, Object]),
         fail.
 
 notice_all_objects_at(_). 
@@ -367,13 +365,17 @@ finish :-
  */
 look() :-
         adv_i_am_at(Place),
+        writeln('[~~~~~~~~~~~~~~~~~ DAILY REPORT ~~~~~~~~~~~~~~~~~~ (''helpme.'' to get help) ~~~~]'),
+        writeln('Your first mate reports:'),
         desc_here(Place),
         nl,
+        writeln('Your foretopman reports:'),
         desc_horizon(Place, n, 'north'), format(',~n'),
         desc_horizon(Place, s, 'south'), format(',~n'),
         desc_horizon(Place, w, 'west'), format(',~n'),
         desc_horizon(Place, e, 'east'), format('.~n'),
         nl,
+        writeln('Your merchant''s intuition says:'),
         notice_any_objects_at(Place).
 
 /**HELPER
@@ -386,10 +388,10 @@ desc_here(Place) :-
         map_tile_type(Place, t_merchant) -> (
                 map_island_name(Place, Name),
                 map_merchant_name(Place, Merchant),
-                format('You are on the ~w.~nRumours are you can trade with ~w here.~n', [Name, Merchant])
+                format('  - You are on the ~w.~n  - Rumours are you can trade with ~w here. You gotta ask them.~n', [Name, Merchant])
         );
-        map_tile_type(Place, t_shallow) -> format('You are on a calm sea.~n');
-        map_tile_type(Place, t_deep) -> format('The sea is unsteady.~nYour ship could be blown away at any moment..~n').
+        map_tile_type(Place, t_shallow) -> format('  - You are on a calm sea.~n');
+        map_tile_type(Place, t_deep) -> format('  - The sea is unsteady.~n  - Your ship could be blown away at any moment..~n').
 
 /**HELPER
  * desc_horizon(+Place:atom, +Direction, +DirName)
@@ -399,11 +401,11 @@ desc_here(Place) :-
  */
 desc_horizon(Place, Direction, DirName) :-
         map_path(Place, Direction, OtherPlace) -> (
-                map_tile_type(OtherPlace, t_merchant) -> format('Land ho! A coast up ~w', [DirName]);
-                map_tile_type(OtherPlace, t_shallow) -> format('Nothing but calm waters up ~w', [DirName]);
-                map_tile_type(OtherPlace, t_deep) -> format('Vile storms are brewing up ~w', [DirName])
+                map_tile_type(OtherPlace, t_merchant) -> format('  - Land ho! A coast up ~w', [DirName]);
+                map_tile_type(OtherPlace, t_shallow) -> format('  - Nothing but calm waters up ~w', [DirName]);
+                map_tile_type(OtherPlace, t_deep) -> format('  - Vile storms are brewing up ~w', [DirName])
         );(
-                format('You smell no money up ~w', [DirName])
+                format('  - You smell no money up ~w', [DirName])
         ).
 
 /**HELPER

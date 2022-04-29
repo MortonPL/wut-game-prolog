@@ -27,7 +27,7 @@
         :- dynamic sys_first_session/0.
 
         % functors
-        :- dynamic start/0, quit/0, menu/0.
+        :- dynamic start/0, quit/0, menu/0, welcome/0, intro/0.
 
 
 % command
