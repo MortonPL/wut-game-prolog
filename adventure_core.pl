@@ -499,6 +499,7 @@ ask(Merchant) :-
         (adv_i_am_at(Place) -> true; format('Unfortunately, ~w is far away.~n', [Merchant]), fail),
         writeln('What do you want to ask about?'),
         write('''offer'''),
+        (Merchant = 'Tem' -> write(' ''map''')),
         print_out_topics(Place),
         true.
 
@@ -519,8 +520,16 @@ ask(Merchant, Topic) :-
         (adv_i_am_at(Place) -> true; format('Unfortunately, ~w is far away.~n', [Merchant]), fail),
         (Topic = offer -> print_out_offer(Place);
                 map_merchant_topic(Place, Topic, Answer) -> writeln(Answer);
+                (Merchant = 'Tem', Topic = map) -> check_mq_status;
                 writeln('Haven''t heard of it.')
         ).
+
+check_mq_status :-
+        ((adv_in_inventory(player, map_piece_1, _), adv_in_inventory(player, map_piece_2, _))
+                -> (writeln('Well done :3 You win.'), halt);
+        (adv_in_inventory(player, map_piece_1, _); adv_in_inventory(player, map_piece_2, _))
+                -> writeln('u need one more piece');
+        writeln('what map?')).
 
 /**HELPER
  * print_out_offer(++Place:atom)
