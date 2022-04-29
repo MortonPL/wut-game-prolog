@@ -60,10 +60,10 @@ menu() :-
  * Displays the main menu.
  */
 welcome() :-
-        writeln('╔════════════════════════════════════╗'),
-        writeln('║       ''AHOY'' IS FIVE DOLLARS       ║'),
-        writeln('║   A text adventure trading game.   ║'),
-        writeln('╚════════════════════════════════════╝'),
+        writeln('+====================================+'),
+        writeln('|       ''AHOY'' IS FIVE DOLLARS       |'),
+        writeln('|   A text adventure trading game.   |'),
+        writeln('+====================================+'),
         nl,
         writeln('              |    |    |  '),
         writeln('             )_)  )_)  )_)'),
