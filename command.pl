@@ -14,7 +14,7 @@
         assert(command(n)),         assert(command(south)), assert(command(s)),         assert(command(west)),
         assert(command(w)),         assert(command(east)),  assert(command(e)),         assert(command(take)),
         assert(command(drop)),      assert(command(look)),  assert(command(inventory)), assert(command(i)),
-        assert(command(buy)),       assert(command(sell)).
+        assert(command(buy)),       assert(command(sell)),  assert(command(ask)),       assert(command(inspect)).
 
 % pragma once
 :- has_included(command);assert(has_included(command)).
