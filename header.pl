@@ -10,7 +10,7 @@
         :- dynamic adv_i_am_at/1,     adv_in_inventory/3, adv_player_name/1, map_path/3,
                    map_merchandise/3, map_island_name/2,         map_tile_type/2,   map_merchant_name/2,
                    adv_price/2,       adv_worth/2,      pirates_min_th/1,         pirates_max_th/1,
-                   pirates_max_pc/1,  map_merchant_prompt.
+                   pirates_max_pc/1,  map_merchant_prompt/2.
 
         % functors
         :- dynamic adv_add_inventory/3,     adv_move_inventory/5, take/1,           take/2,
