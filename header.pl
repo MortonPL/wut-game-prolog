@@ -20,7 +20,7 @@
                    notice_any_objects_at/1, die/0,                finish/0,         game_start/0,
                    desc_here/1,             desc_horizon/3,       has_at_least/3,   buy/3,
                    sell/3,                  move/1,               check_storm/1,    do_the_storm/1,
-                   dir_encode/2,            dir_decode/2.
+                   dir_encode/2,            dir_decode/2,         map_selling/3,    map_buying/3.
 
 % adventure
         % data
