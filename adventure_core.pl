@@ -227,6 +227,7 @@ go(Direction) :-
         move(Direction),
         !,
         check_storm(Direction),
+        pirate_roll(),
         look.
 
 go(_) :-
@@ -386,9 +387,9 @@ adv_items_reduce(_).
 pirate_attack() :-
         format('The pirates attacked you!~n'),
         adv_add_inventory(player, mercenary, -1) ->
-        format('Your brave mercenaries defended you!~n(-1 mercenary)~n');
+        format('Your brave mercenaries defended you!~n(-1 mercenary)~n~n');
         adv_items_reduce(0.5),
-        format('You had no one to defend.~nYou lost half of your items.~n').
+        format('You had no one to defend.~nYou lost half of your items.~n~n').
 
 pirate_roll() :-
         total_worth(TotalWorth),
