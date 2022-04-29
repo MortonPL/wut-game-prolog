@@ -10,9 +10,9 @@
 adv_i_am_at(tile_0_3).
 
 adv_in_inventory(player, coin, 50).
-adv_in_inventory(player, blunderbuss, 5).
 adv_in_inventory(player, blunderbuss, 12).
 adv_in_inventory(player, map_piece_2, 30).
+adv_in_inventory(player, mercenary, 2).
 
 adv_price(rum, 35).  % a bottle
 adv_price(gunpowder, 10).  % for one shot
