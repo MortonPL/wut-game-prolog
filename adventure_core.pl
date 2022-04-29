@@ -90,7 +90,7 @@ take(_) :-
 handle_take_ret(Ret, Object, Amount) :-
         err_tooSmallAmount = Ret        -> writeln('You can''t take less than 1 of something.');
         err_missingObject = Ret         -> format('There is none.~n');
-        err_tooBigAmount = Ret          -> format('There is not enough ``~w'' here.~n', [Object]);
+        err_tooBigAmount = Ret          -> format('There is not enough ''~w'' here.~n', [Object]);
         ok_success = Ret                -> format('You took ~w of ''~w''.~n', [Amount, Object]).
 
 
@@ -123,7 +123,7 @@ drop(_) :-
 handle_drop_ret(Ret, Object, Amount) :-
         ok_success = Ret                -> format('You dropped ~w of ''~w''.~n', [Amount, Object]);
         err_missingObject = Ret         -> format('There is no ''~w'' on you.~n', [Object]);
-        err_tooBigAmount = Ret          -> format('There is not enough ``~w'' on you.~n', [Object]);
+        err_tooBigAmount = Ret          -> format('There is not enough ''~w'' on you.~n', [Object]);
         err_tooSmallAmount = Ret        -> write('Don''t be silly.~n').
 
 
@@ -141,13 +141,15 @@ sell(Merchant, Object, Amount) :-
         map_merchant_name(Place, Merchant),
         adv_i_am_at(Place),
         adv_price(Object, BasePrice),
-        map_merchandise(Place, Object, PriceMultiplier),
+        (map_buying(Place, Object, PriceMultiplier) -> true;
+                report_trading_error(err_notBuying, Object)),
         EarnedCoins is Amount * round(BasePrice * PriceMultiplier),
         (has_at_least(player, Object, Amount) -> true;
                 report_trading_error(err_notEnoughGoods, Object)),
         adv_add_inventory(player, Object, -Amount),
         adv_add_inventory(player, coin, EarnedCoins),
-        format('You sold ~w of ''~w'' for ~w coins.~n', [Amount, Object, EarnedCoins]).
+        format('You sold ~w of ''~w'' for ~w coins.~n', [Amount, Object, EarnedCoins]),
+        !.
 
 /**COMMAND
  * buy(++Merchant:atom, ++Object:int, ++Amount:int)
@@ -163,13 +165,15 @@ buy(Merchant, Object, Amount) :-
         map_merchant_name(Place, Merchant),
         adv_i_am_at(Place),
         adv_price(Object, BasePrice),
-        map_merchandise(Place, Object, PriceMultiplier),
+        (map_selling(Place, Object, PriceMultiplier) -> true;
+                report_trading_error(err_notSelling, Object)),
         SpentCoins is Amount * round(BasePrice * PriceMultiplier),
         (has_at_least(player, coin, SpentCoins) -> true;
                 report_trading_error(err_noMoney, Object)),
         adv_add_inventory(player, coin, -SpentCoins),
         adv_add_inventory(player, Object, Amount),
-        format('You bought ~w of ''~w'' for ~w coins.~n', [Amount, Object, SpentCoins]).
+        format('You bought ~w of ''~w'' for ~w coins.~n', [Amount, Object, SpentCoins]),
+        !.
 
 /**HELPER
  * report_trading_error(++Error:atom, ++Object:atom)
@@ -179,7 +183,9 @@ buy(Merchant, Object, Amount) :-
  */
 report_trading_error(Error, Object) :-
         (Error = err_noMoney       -> writeln('Come back when you''re a little richer.');
-        Error = err_notEnoughGoods -> format('There is not enough ``~w'' on you.~n', [Object]);
+        Error = err_notEnoughGoods -> format('There is not enough ''~w'' on you.~n', [Object]);
+        Error = err_notSelling     -> format('You can''t buy ''~w'' here.~n', [Object]);
+        Error = err_notBuying      -> format('You can''t sell ''~w'' here.~n', [Object]);
         Error = err_negativeAmount -> writeln('No cheating >.<')),
         fail.
 
