@@ -389,6 +389,18 @@ adv_items_reduce(Percentage) :-
 
 adv_items_reduce(_).
 
+/**HELPER
+ * ensure_map_piece_1()
+ * 
+ * Give the player a map piece 1 if he doesn't have one yet.
+ */
+ensure_map_piece_1() :-
+        (\+ adv_in_inventory(player, map_piece_1, _)) ->
+        adv_add_inventory(player, map_piece_1, 1),
+        format('You''ve found a map piece in the wreckage!~n'),
+        !;
+        true.
+
 /**SYSTEM
  * pirate_attack()
  * 
@@ -397,9 +409,11 @@ adv_items_reduce(_).
 pirate_attack() :-
         format('The pirates attacked you!~n'),
         adv_add_inventory(player, mercenary, -1) ->
-        format('Your brave mercenaries defended you!~n(-1 mercenary)~n~n');
-        adv_items_reduce(0.5),
-        format('You had no one to defend.~nYou lost half of your items.~n~n').
+                format('Your brave mercenaries defended you!~n(-1 mercenary)~n~n')%,
+                %ensure_map_piece_1
+        ;
+                adv_items_reduce(0.5),
+                format('You had no one to defend.~nYou lost half of your items.~n~n').
 
 /**SYSTEM
  * pirate_roll()
