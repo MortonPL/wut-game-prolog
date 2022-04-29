@@ -293,7 +293,7 @@ notice_any_objects_at(Place) :-
                 notice_all_objects_at(Place)
                 ;
                 writeln('There is nothing of value here.')
-        ). 
+        ).
 
 /**HELPER
  * notice_any_objects_at(+Place:atom)
@@ -442,3 +442,55 @@ worth_sum([Head|Tail], TotalWorth) :-
         adv_worth(Item, Worth),
         TotalWorth is (Count * Worth) + Rest.
 
+/**COMMAND
+ * ask(++Merchant:atom, ++Topic:atom)
+ * 
+ * Provides information on Topic from Merchant's perspective.
+ */
+ask(Merchant, Topic) :-
+        map_merchant_name(Place, Merchant),
+        (adv_i_am_at(Place) -> true; format('Unfortunately, ~w is far away.~n', [Merchant]), fail),
+        (Topic = offer -> print_out_offer(Place);
+                writeln('Haven''t heard of it.')
+        ).
+
+/**HELPER
+ * print_out_offer(++Place:atom)
+ * 
+ * Prints out trade offers from Place.
+ */
+print_out_offer(Place) :-
+        writeln('Selling:'),
+        print_selling_offer(Place),
+        nl,
+        writeln('Buying:'),
+        print_buying_offer(Place),
+        true.
+
+/**HELPER
+ * print_selling_offer(+Place:atom)
+ * 
+ * Failure-driven loop for map_selling facts with fixed Place.
+ */
+print_selling_offer(Place) :-
+        map_selling(Place, Object, PriceMultiplier),
+        adv_price(Object, BasePrice),
+        MultipliedPrice is round(BasePrice * PriceMultiplier),
+        format('~w for ''~w'' coins each~n', [Object, MultipliedPrice]),
+        fail.
+
+print_selling_offer(_). 
+
+/**HELPER
+ * print_buying_offer(+Place:atom)
+ * 
+ * Failure-driven loop for map_buying facts with fixed Place.
+ */
+print_buying_offer(Place) :-
+        map_buying(Place, Object, PriceMultiplier),
+        adv_price(Object, BasePrice),
+        MultipliedPrice is round(BasePrice * PriceMultiplier),
+        format('''~w'' for ~w coins each~n', [Object, MultipliedPrice]),
+        fail.
+
+print_buying_offer(_). 
