@@ -64,7 +64,7 @@ save :-
  */
 load(Name) :-
         atomic_list_concat(['saves/', Name, '.sav'], '', Path),
-        reset_game,
+        reset_game,!,
         open(Path, read, Fd),
         serializables(Serializables),
         % For each entry in the save file
@@ -109,12 +109,10 @@ load :-
  * Abolishes all serializable predicates from the database and reloads them.
  * Always succeedes.
  */
-reset_game :-
+reset_game :-      
         serializables(Serializables),
         foreach(member(S, Serializables), 
         (
                 abolish(S)
         )),
-        retract(has_included(serialize)),
-        [serialize].
-
+        [header].

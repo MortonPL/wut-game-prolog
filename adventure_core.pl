@@ -231,7 +231,7 @@ go(Direction) :-
         move(Direction),
         !,
         check_storm(Direction),
-        pirate_roll(),
+        pirate_roll,
         look.
 
 go(_) :-
@@ -405,7 +405,7 @@ desc_horizon(Place, Direction, DirName) :-
                 map_tile_type(OtherPlace, t_shallow) -> format('  - Nothing but calm waters up ~w', [DirName]);
                 map_tile_type(OtherPlace, t_deep) -> format('  - Vile storms are brewing up ~w', [DirName])
         );(
-                format('  - You smell no money up ~w', [DirName])
+                format('  - No money to be made up ~w', [DirName])
         ).
 
 /**HELPER
@@ -499,7 +499,7 @@ ask(Merchant) :-
         (adv_i_am_at(Place) -> true; format('Unfortunately, ~w is far away.~n', [Merchant]), fail),
         writeln('What do you want to ask about?'),
         write('''offer'''),
-        (Merchant = 'Tem' -> write(' ''map''')),
+        (Merchant = 'Tem' -> write(' ''map'''); true),
         print_out_topics(Place),
         true.
 
@@ -555,7 +555,7 @@ print_selling_offer(Place) :-
         map_selling(Place, Object, PriceMultiplier),
         adv_price(Object, BasePrice),
         MultipliedPrice is round(BasePrice * PriceMultiplier),
-        format('~w for ''~w'' coins each~n', [Object, MultipliedPrice]),
+        format('''~w'' for ~w coins each~n', [Object, MultipliedPrice]),
         fail.
 
 print_selling_offer(_). 
