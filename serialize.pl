@@ -23,7 +23,7 @@
  * Always succeedes.
  */
 serializables(List) :-
-        bagof(X, serializable(X), List)
+        bagof(S, serializable(S), List)
         ;
         true.
 
@@ -36,10 +36,10 @@ serializables(List) :-
 save(File) :-
         atomic_list_concat(['saves/', File, '.sav'], '', Path),
         tell(Path),
-        serializables(S),
-        foreach(member(X, S),
+        serializables(Serializables),
+        foreach(member(S, Serializables),
         (
-            listing(X)
+            listing(S)
         )),
         told.
 
@@ -66,22 +66,22 @@ load(Name) :-
         atomic_list_concat(['saves/', Name, '.sav'], '', Path),
         reset_game,
         open(Path, read, Fd),
-        serializables(S),
+        serializables(Serializables),
         % For each entry in the save file
         repeat,
-                read_term(Fd, X, []),
-                (X == end_of_file ->
+                read_term(Fd, Term, []),
+                (Term == end_of_file ->
                         !
                         ; 
                         % match compound term with functor name/arity
-                        (foreach((member(FCmpd,S),
+                        (foreach((member(FCmpd,Serializables),
                                 term_to_atom(FCmpd, FAtom),
                                 sub_atom(FAtom, 0, _, 2, FName),
                                 sub_atom(FAtom, _, 1, 0, FArity),
                                 number_codes(FArityInt, [FArity]),
-                                functor(X, FName, FArityInt)),
+                                functor(Term, FName, FArityInt)),
                         (
-                                assert(X)
+                                assert(Term)
                         )),
                         fail
                         )
@@ -110,9 +110,11 @@ load :-
  * Always succeedes.
  */
 reset_game :-
-        serializables(S),
-        foreach(member(X, S), 
+        serializables(Serializables),
+        foreach(member(S, Serializables), 
         (
-                abolish(X)
+                abolish(S)
         )),
-        consult(serialize).
+        retract(has_included(serialize)),
+        [serialize].
+

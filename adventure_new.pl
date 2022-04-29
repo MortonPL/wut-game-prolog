@@ -11,7 +11,7 @@ adv_i_am_at(tile_0_3).
 
 adv_in_inventory(player, coin, 50).
 
-price(rum, 35).  % a bottle
-price(gunpowder, 10).  % for one shot
-price(blunderbuss, 250).
-price(ration, 10).
+adv_price(rum, 35).  % a bottle
+adv_price(gunpowder, 10).  % for one shot
+adv_price(blunderbuss, 250).
+adv_price(ration, 10).

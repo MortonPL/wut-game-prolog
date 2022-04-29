@@ -34,6 +34,8 @@ helpme :-
         writeln('  drop(Item) / drop(Item, Amount).     -- to put down all or Amount of Item.'),
         writeln('  i. / inventory.                      -- to check your items'),
         writeln('  look.                                -- to look around you.').
+        writeln('  buy(Trader, Item, Amount).           -- to buy an Amount of Item from a Trader.').
+        writeln('  sell(Trader, Item, Amount).          -- to sell an Amount of Item from a Trader.').
 
 /*COMMAND
  * helpme(+Command:atom)
@@ -99,3 +101,9 @@ get_description(inventory) :-
 
 get_description(i) :-
         get_description(inventory).
+
+get_description(buy) :-
+        get_description('buy(Trader, Item, Amount). - Buy an Amount of Item with a Trader for money.').
+
+get_description(sell) :-
+        get_description('sell(Trader, Item, Amount). - Sell an Amount of Item with a Trader for money.').

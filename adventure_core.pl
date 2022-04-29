@@ -11,8 +11,10 @@
 :- has_included(adventure_core);assert(has_included(adventure_core)).
 
 /**SYSTEM
- * adv_add_inventory(+Object:atom, ++Amount:int)
+ * adv_add_inventory(+Owner:atom, +Object:atom, ++Amount:int)
  * 
+ * Adds or substracts an Amount of Object to an Owner's inventory.
+ * Can fail?
  */
 adv_add_inventory(Owner, Object, Amount) :-
         Amount > 0,
@@ -36,6 +38,13 @@ adv_add_inventory(Owner, Object, Amount) :-
                 retract(adv_in_inventory(Owner, Object, OldAmount))
         ).
 
+
+/**SYSTEM
+ * adv_move_inventory(++OwnerA:atom, ++OwnerB:atom, ++Object:atom, ++Amount:int, --Ret:atom)
+ * 
+ * Transfers an Amount of Object from OwnerA to OwnerB. Result of this action is stored in Ret.
+ * Doesn't fail.
+ */
 adv_move_inventory(OwnerA, OwnerB, Object, Amount, Ret) :-
         Amount > 0 -> (
                 adv_in_inventory(OwnerA, Object, AmountA) -> (
@@ -51,10 +60,11 @@ has_at_least(Owner, Object, Amount) :-
         adv_in_inventory(Owner, Object, ActualAmount),
         ActualAmount >= Amount.
 
-
 /**COMMAND
- * take(Object)
+ * take(++Object:atom, ++Amount:int)
  * 
+ * Picks up an Amount of Object from the current location, if it is possible.
+ * Can fail.
  */
 take(Object, Amount) :-
         adv_i_am_at(Place),
@@ -71,14 +81,25 @@ take(Object) :-
 take(_) :-
         handle_take_ret(err_missingObject, _, 0).
 
+
+/**HELPER
+ * handle_take_ret(++Ret:atom, ++Object:atom, ++Amount:int)
+ * 
+ * Informs the user of the result of 'take' command.
+ */
 handle_take_ret(Ret, Object, Amount) :-
-        err_tooSmallAmount = Ret        -> write('Don''t be silly.~n');
+        err_tooSmallAmount = Ret        -> writeln('You can''t take less than 1 of something.');
         err_missingObject = Ret         -> format('There is none.~n');
         err_tooBigAmount = Ret          -> format('There is not enough ``~w'' here.~n', [Object]);
         ok_success = Ret                -> format('You took ~w of ''~w''.~n', [Amount, Object]).
 
 
-/* These rules describe how to put down an object. */
+/**COMMAND
+ * drop(++Object:atom, ++Amount:int)
+ * 
+ * Drops down an Amount of Object from the current location, if it is possible.
+ * Can fail.
+ */
 drop(Object, Amount) :-
         adv_i_am_at(Place),
         (adv_move_inventory(player, Place, Object, Amount, Ret); true),
@@ -93,6 +114,12 @@ drop(Object) :-
 drop(_) :-
         handle_drop_ret(err_missingObject, _, 0).
 
+
+/**HELPER
+ * handle_drop_ret(++Ret:atom, ++Object:atom, ++Amount:int)
+ * 
+ * Informs the user of the result of 'drop' command.
+ */
 handle_drop_ret(Ret, Object, Amount) :-
         ok_success = Ret                -> format('You dropped ~w of ''~w''.~n', [Amount, Object]);
         err_missingObject = Ret         -> format('There is no ''~w'' on you.~n', [Object]);
@@ -113,7 +140,7 @@ sell(Merchant, Object, Amount) :-
                 report_trading_error(err_negativeAmount, Object)),
         map_merchant_name(Place, Merchant),
         adv_i_am_at(Place),
-        price(Object, BasePrice),
+        adv_price(Object, BasePrice),
         map_merchandise(Place, Object, PriceMultiplier),
         EarnedCoins is Amount * round(BasePrice * PriceMultiplier),
         (has_at_least(player, Object, Amount) -> true;
@@ -135,7 +162,7 @@ buy(Merchant, Object, Amount) :-
                 report_trading_error(err_negativeAmount, Object)),
         map_merchant_name(Place, Merchant),
         adv_i_am_at(Place),
-        price(Object, BasePrice),
+        adv_price(Object, BasePrice),
         map_merchandise(Place, Object, PriceMultiplier),
         SpentCoins is Amount * round(BasePrice * PriceMultiplier),
         (has_at_least(player, coin, SpentCoins) -> true;
@@ -160,7 +187,11 @@ report_trading_error(Error, Object) :-
 /*WARNING - UNFORMATED, UNEDITED FILE */
 
 
-/* These rules define the direction letters as calls to go/1. */
+/**COMMAND
+ * north() / n() / south() / s() / east() / e() / west() / w()
+ * 
+ * User command aliases for moving in one of the cardinal directions.
+ */
 north() :-
         go(n).
 
@@ -186,7 +217,12 @@ w() :-
         west.
 
 
-/* This rule tells how to move in a given direction. */
+/**SYSTEM
+ * go(+Direction:atom)
+ * 
+ * Change player's location to a neighbouring tile in a Direction if possible.
+ * Can fail.
+ */
 go(Direction) :-
         move(Direction),
         !,
@@ -231,14 +267,11 @@ dir_decode(Direction, Value) :-
         Value is 3 -> Direction = w.
 
 
-/* This rule tells how to look about you. */
-look :-
-        adv_i_am_at(Place),
-        describe(),
-        nl,
-        notice_any_objects_at(Place),
-        nl.
-
+/**COMMAND
+ * inventory() / i()
+ * 
+ * Print the list of player owned objects and their amounts.
+ */
 inventory :-
         nl,
         notice_any_objects_at(player),
@@ -247,28 +280,42 @@ inventory :-
 i :- inventory.
 
 
-/* These rules set up a loop to mention all the objects
-   in your vicinity. */
-notice_all_objects_at(Place) :-
-        adv_in_inventory(Place, Object, Amount),
-        format('~w of ''~w''~n', [Amount, Object]),       /* :kingsi: */
-        fail.
-
-notice_all_objects_at(_).
-
-
+/**SYSTEM
+ * notice_any_objects_at(+Place:atom)
+ * 
+ * Lists all objects in a Place or, if nothing is found, says so.
+ * Doesn't fail.
+ */
 notice_any_objects_at(Place) :-
         (adv_in_inventory(Place, _, _) ->
                 writeln('You can find following items:'),
                 notice_all_objects_at(Place)
                 ;
                 writeln('There is nothing of value here.')
-        ).  
+        ). 
+
+/**HELPER
+ * notice_any_objects_at(+Place:atom)
+ * 
+ * Goes over all possible objects in the Place and prints them.
+ * Failure-driven loop.
+ */
+notice_all_objects_at(Place) :-
+        adv_in_inventory(Place, Object, Amount),
+        format('~w of ''~w''~n', [Amount, Object]),
+        fail.
+
+notice_all_objects_at(_). 
 
 
-/* This rule tells how to die. */
-die :-
-        finish.
+/**SYSTEM
+ * game_start()
+ * 
+ * Begins the game session.
+ */
+game_start :-
+        (retract(sys_first_session) ; true),
+        !, look.
 
 
 /* Under UNIX, the "halt." command quits Prolog but does not
@@ -280,31 +327,44 @@ finish :-
         write('The game is over. Please enter the "halt." command.'),
         nl.
 
-/* This rule prints out instructions and tells where you are. */
-game_start :-
-        (retract(sys_first_session) ; true),
-        !, look.
 
-
-/* These rules describe the various rooms.  Depending on
-   circumstances, a room may have more than one description. */
-describe() :-
+/**COMMAND
+ * look()
+ * 
+ * Print the description of the current and neighbouring locations.
+ */
+look() :-
         adv_i_am_at(Place),
         desc_here(Place),
         nl,
         desc_horizon(Place, n, 'north'), format(',~n'),
         desc_horizon(Place, s, 'south'), format(',~n'),
         desc_horizon(Place, w, 'west'), format(',~n'),
-        desc_horizon(Place, e, 'east'), format('.~n').
+        desc_horizon(Place, e, 'east'), format('.~n'),
+        nl,
+        notice_any_objects_at(Place).
 
+/**HELPER
+ * desc_here(++Place:atom)
+ * 
+ * Describes the Place.
+ * Doesn't fail.
+ */
 desc_here(Place) :-
         map_tile_type(Place, t_merchant) -> (
                 map_name(Place, Name),
-                format('You are on the ~w.~nThere ought to be a merchant here!~n', [Name])
+                map_merchant_name(Place, Merchant),
+                format('You are on the ~w.~nRumours are you can trade with ~w here.~n', [Name, Merchant])
         );
         map_tile_type(Place, t_shallow) -> format('You are on a calm sea.~n');
         map_tile_type(Place, t_deep) -> format('The sea is unsteady.~nYour ship could be blown away at any moment..~n').
 
+/**HELPER
+ * desc_horizon(+Place:atom, +Direction, +DirName)
+ * 
+ * Describes the neighbour of Place in a Direction, called DirName.
+ * Doesn't fail.
+ */
 desc_horizon(Place, Direction, DirName) :-
         map_path(Place, Direction, OtherPlace) -> (
                 map_tile_type(OtherPlace, t_merchant) -> format('Land ho! A coast up ~w', [DirName]);

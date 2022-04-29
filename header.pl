@@ -9,7 +9,7 @@
         % data
         :- dynamic adv_i_am_at/1,       adv_in_inventory/2, adv_in_inventory/3, adv_player_name/1,
                    map_path/3,          map_merchandise/3,  map_name/2,         map_tile_type/2,
-                   map_merchant_name/2, price/2.
+                   map_merchant_name/2, adv_price/2.
 
         % functors
         :- dynamic adv_add_inventory/3,     adv_move_inventory/5, take/1,           take/2,
@@ -17,8 +17,9 @@
                    north/0, n/0,            south/0, s/0,         east/0, e/0,      west/0, w/0,
                    go/1,                    look/0,               inventory/0, i/0, notice_all_objects_at/1,
                    notice_any_objects_at/1, die/0,                finish/0,         game_start/0,
-                   describe/0,              desc_here/1,          desc_horizon/3,   has_at_least/3,
-                   buy/3,                   sell/3.
+                   desc_here/1,             desc_horizon/3,       has_at_least/3,   buy/3,
+                   sell/3,                  move/1,               check_storm/1,    do_the_storm/1,
+                   dir_encode/2,            dir_decode/2.
 
 % adventure
         % data

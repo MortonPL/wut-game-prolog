@@ -2,7 +2,6 @@
 ╔════════════════════════════════════╗
 ║ Filename: command.pl               ║
 ║ Title: Command interface extras    ║
-║ Reload: Safe                       ║
 ╚════════════════════════════════════╝
 */
 
@@ -14,7 +13,8 @@
         assert(command(helpme)),    assert(command(start)), assert(command(quit)),      assert(command(north)),
         assert(command(n)),         assert(command(south)), assert(command(s)),         assert(command(west)),
         assert(command(w)),         assert(command(east)),  assert(command(e)),         assert(command(take)),
-        assert(command(drop)),      assert(command(look)),  assert(command(inventory)), assert(command(i)).
+        assert(command(drop)),      assert(command(look)),  assert(command(inventory)), assert(command(i)),
+        assert(command(buy)),       assert(command(sell)).
 
 % pragma once
 :- has_included(command);assert(has_included(command)).
@@ -26,8 +26,7 @@
  * True for yes, false for no.
  */
 confirm(Question) :-
-        atomics_to_string([Question, '(yes/no)'], Q),
-        writeln(Q),
+        format('~w (yes/no)~n', [Question]),
         repeat,
                 read(A),
                 (member(A, [yes, no]) ->
