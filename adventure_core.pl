@@ -375,15 +375,25 @@ desc_horizon(Place, Direction, DirName) :-
                 format('You smell no money up ~w', [DirName])
         ).
 
+/**HELPER
+ * adv_items_reduce(++Percentage:float)
+ * 
+ * Keeps only the provided percentage of items on the player.
+ * Rounds to the bottom. (stacks of 1 disappear)
+ */
 adv_items_reduce(Percentage) :-
         adv_in_inventory(player, Item, Count),
-        retract(adv_in_inventory(player, Item, Count)),
-        Reduced is floor(Count * Percentage),
-        assert(adv_in_inventory(player, Item, Reduced)),
+        Remove is floor(Count * Percentage) - Count,
+        adv_add_inventory(player, Item, Remove),
         fail.
 
 adv_items_reduce(_).
 
+/**SYSTEM
+ * pirate_attack()
+ * 
+ * Simulates a pirate attack.
+ */
 pirate_attack() :-
         format('The pirates attacked you!~n'),
         adv_add_inventory(player, mercenary, -1) ->
@@ -391,6 +401,11 @@ pirate_attack() :-
         adv_items_reduce(0.5),
         format('You had no one to defend.~nYou lost half of your items.~n~n').
 
+/**SYSTEM
+ * pirate_roll()
+ * 
+ * Rolls for a pirate attack and performs it if conditions are met.
+ */
 pirate_roll() :-
         total_worth(TotalWorth),
         pirates_min_th(MinTreshold),
@@ -405,16 +420,25 @@ pirate_roll() :-
         );
         true.
 
+/**HELPER
+ * total_worth(--TotalWorth:int)
+ * 
+ * Calculates the total worth of player ship.
+ */
 total_worth(TotalWorth) :-
         findall([Item, Count], (adv_in_inventory(player, Item, Count)), Items),
         worth_sum(Items, TotalWorth).
 
+/**HELPER
+ * worth_sum(++[Head|Tail]:[Item, Count][], --TotalWorth:int)
+ * 
+ * Calculates a partial worth of player ship.
+ */
 worth_sum([], 0).
 worth_sum([Head|Tail], TotalWorth) :-
         worth_sum(Tail, Rest),
         nth0(0, Head, Item),
         nth0(1, Head, Count),
         adv_worth(Item, Worth),
-        adv_price(Item, Price),
-        TotalWorth is (Count * Price * Worth) + Rest.
+        TotalWorth is (Count * Worth) + Rest.
 
