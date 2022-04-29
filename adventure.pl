@@ -27,9 +27,9 @@ start() :-
                 true
                 ;
                 confirm('Are you sure you want to restart?')
-        ),
-        reset_game,
-        consult(adventure_new),
+        ),!,
+        reset_game,!,
+        [adventure_new],
         get_input('What is your name? (Wrapped in '''')', Name, adv_player_name(Name)),
         game_start.
 

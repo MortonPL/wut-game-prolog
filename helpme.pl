@@ -33,8 +33,8 @@ helpme :-
         writeln('  take(Item) / take(Item, Amount).     -- to pick up all or Amount of Item.'),
         writeln('  drop(Item) / drop(Item, Amount).     -- to put down all or Amount of Item.'),
         writeln('  i. / inventory.                      -- to check your items'),
-        writeln('  look.                                -- to look around you.').
-        writeln('  buy(Trader, Item, Amount).           -- to buy an Amount of Item from a Trader.').
+        writeln('  look.                                -- to look around you.'),
+        writeln('  buy(Trader, Item, Amount).           -- to buy an Amount of Item from a Trader.'),
         writeln('  sell(Trader, Item, Amount).          -- to sell an Amount of Item from a Trader.').
 
 /*COMMAND

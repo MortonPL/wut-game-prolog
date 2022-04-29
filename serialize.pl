@@ -10,7 +10,7 @@
 :-
         has_included(serialize);
         % All serializable game data should be asserted here.
-        assert(serializable(adv_i_am_at/1)),     assert(serializable(adv_in_inventory/2)),  assert(serializable(adv_in_inventory/3)),
+        assert(serializable(adv_i_am_at/1)),     assert(serializable(adv_in_inventory/3)),
         assert(serializable(adv_player_name/1)), assert(serializable(sys_last_savename/1)).
 
 % pragma once
